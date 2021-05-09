@@ -6,6 +6,19 @@
 #include "esp_system.h"
 #include "esp_wifi.h"
 #include <cstring>
+#include "esp_system.h"
+#include "nvs.h"
+#include "nvs_flash.h"
+
+constexpr char SSID_KEY[] = "ssid";
+constexpr char PASSWORD_KEY[] = "password";
+constexpr char MODE_KEY[] = "mode";
+
+static nvs_handle_t g_networkStorageHandle;
+
+bool NetworkConfig::initNetworkConfig() {
+    return nvs_open("storage", NVS_READWRITE, &g_networkStorageHandle) == ESP_OK;
+}
 
 wifi_mode_t NetworkConfig::getMode() {
     if (gs_isRouter) {
@@ -48,3 +61,10 @@ uint16_t NetworkConfig::getCommunicationPort() { return (uint16_t)DEFAULT_UNICAS
 uint16_t NetworkConfig::getBroadcastInputPort() { return (uint16_t)DEFAULT_BROADCAST_INPUT_PORT; }
 
 uint16_t NetworkConfig::getBroadcastOutputPort() { return (uint16_t)DEFAULT_BROADCAST_OUTPUT_PORT; }
+
+bool NetworkConfig::persistNetworkConfig() {
+    nvs_set_str(g_networkStorageHandle, SSID_KEY, DEFAULT_SSID);
+    nvs_set_str(g_networkStorageHandle, PASSWORD_KEY, DEFAULT_PASSWORD);
+    nvs_set_u8(g_networkStorageHandle, MODE_KEY, gs_isRouter);
+    return true;
+}

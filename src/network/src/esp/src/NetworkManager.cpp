@@ -40,6 +40,8 @@ bool NetworkManager::initNetworkInterface() {
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
+    NetworkConfig::initNetworkConfig();
+
     // Initialize default station as network interface instance. Will change in the future when
     // enabling mesh capabilities
     if (NetworkConfig::getMode() == WIFI_MODE_AP) {
@@ -121,7 +123,8 @@ void NetworkManager::execute() {
         break;
     case NetworkManagerState::CONNECTED:
         m_logger.log(LogLevel::Info, "Connected to network!");
-
+        // Only write network config on successful connections
+        NetworkConfig::persistNetworkConfig();
         if (!m_server.start()) {
             m_logger.log(LogLevel::Info, "Failed to start TCP server socket");
         } else if (!NetworkContainer::getNetworkBroadcast().start()) {

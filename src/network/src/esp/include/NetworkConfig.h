@@ -2,11 +2,17 @@
 #define HIVE_CONNECT_NETWORKCONFIG_H
 
 #include "esp_event.h"
+#include "nvs.h"
 
 /**
- * @brief Namespace for functions to get differecont configuration element for the netowrk
+ * @brief Namespace for functions to get different configuration element for the netowrk
  */
 namespace NetworkConfig {
+/**
+ * @brief Initialize the storage used for the network configuration
+ * @return True if successful, false otherwise
+ */
+bool initNetworkConfig();
 /**
  * @brief Get the configured mode for the node (station, access-point, etc...)
  * @return The configured mode
@@ -42,6 +48,12 @@ uint16_t getBroadcastInputPort();
  * @return The port number
  */
 uint16_t getBroadcastOutputPort();
+
+/**
+ * @brief Writes the network configuration in the persisent storage
+ * @return True if successful, false otherwise
+ */
+bool persistNetworkConfig();
 } // namespace NetworkConfig
 
 #endif // HIVE_CONNECT_NETWORKCONFIG_H

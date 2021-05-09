@@ -48,5 +48,6 @@ target_link_libraries(${LIB_NAME}
         SwarmUS::Propolis::Pheromones
         PRIVATE
         idf::lwip
+        idf::nvs_flash
         )
 
