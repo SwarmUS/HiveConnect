@@ -103,7 +103,7 @@ NetworkStatus NetworkManager::getNetworkStatus() const {
     }
 }
 
-uint32_t NetworkManager::getSelfIP() const { return m_ipAddress.addr; }
+uint32_t NetworkManager::getSelfIP() const { return ntohl(m_ipAddress.addr); }
 
 void NetworkManager::execute() {
     switch (m_state) {
