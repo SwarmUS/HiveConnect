@@ -3,6 +3,7 @@
 
 #include "MessageDispatcher.h"
 #include "NetworkAPIHandler.h"
+#include "HiveConnectHiveMindMessageHandler.h"
 #include "NotificationQueue.h"
 
 namespace MessageHandlerContainer {
@@ -12,6 +13,8 @@ namespace MessageHandlerContainer {
  * @return A new NetworkApiHandler instance
  */
 NetworkAPIHandler createNetworkApiHandler();
+
+HiveConnectHiveMindApiMessageHandler createHiveConnectHiveMindMessageHandler();
 
 /**
  *@brief create a message dispatcher
