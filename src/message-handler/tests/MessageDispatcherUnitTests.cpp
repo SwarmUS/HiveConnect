@@ -177,3 +177,93 @@ TEST_F(MessageDispatcherFixture,
     // Expect
     EXPECT_TRUE(ret);
 }
+
+
+TEST_F(MessageDispatcherFixture,
+       MessageDispatcherFixture_deserializeAndDispatch_HiveConnectHiveMindHandler_local_request) {
+    // Given
+    GetAgentsListRequestDTO agentRequest;
+    HiveConnectHiveMindApiDTO call(1, agentRequest);
+    m_message = MessageDTO(m_uuid, m_uuid, call);
+
+    EXPECT_CALL(m_deserializer, deserializeFromStream(testing::_))
+        .Times(1)
+        .WillOnce(testing::DoAll(testing::SetArgReferee<0>(m_message), testing::Return(true)));
+    EXPECT_CALL(*m_bsp, getHiveMindUUID).WillRepeatedly(testing::Return(m_uuid));
+
+    uint16_t agents[] = {1,2};
+    GetAgentsListResponseDTO agentsListResponse(agents, 2);
+    HiveConnectHiveMindApiDTO response(1, agentsListResponse);
+    MessageDTO msg(m_uuid, m_uuid, response);
+    EXPECT_CALL(m_hiveConnectHiveMindHandler, handleMessage(testing::_,testing::_, testing::_)).WillOnce(testing::Return(msg));
+
+
+    EXPECT_CALL(m_hivemindQueue, push(testing::_)).WillOnce(testing::Return(true));
+
+
+    // Then
+    bool ret = m_messageDispatcher->deserializeAndDispatch();
+
+    // Expect
+    EXPECT_TRUE(ret);
+}
+
+
+TEST_F(MessageDispatcherFixture,
+       MessageDispatcherFixture_deserializeAndDispatch_HiveConnectHiveMindHandler_remote_request) {
+    // Given
+    GetAgentsListRequestDTO agentRequest;
+    HiveConnectHiveMindApiDTO call(1, agentRequest);
+    m_message = MessageDTO(m_remoteUUID, m_uuid, call);
+
+    EXPECT_CALL(m_deserializer, deserializeFromStream(testing::_))
+        .Times(1)
+        .WillOnce(testing::DoAll(testing::SetArgReferee<0>(m_message), testing::Return(true)));
+    EXPECT_CALL(*m_bsp, getHiveMindUUID).WillRepeatedly(testing::Return(m_uuid));
+
+    uint16_t agents[] = {1,2};
+    GetAgentsListResponseDTO agentsListResponse(agents, 2);
+    HiveConnectHiveMindApiDTO response(1, agentsListResponse);
+    MessageDTO msg(m_uuid, m_remoteUUID, response);
+    EXPECT_CALL(m_hiveConnectHiveMindHandler, handleMessage(testing::_,testing::_, testing::_)).WillOnce(testing::Return(msg));
+    EXPECT_CALL(m_manager, getIPFromAgentID(m_remoteUUID))
+        .WillOnce(testing::Return(std::optional<uint32_t>(m_remoteUUID)));
+
+
+    EXPECT_CALL(m_unicastQueue, push(testing::_)).WillOnce(testing::Return(true));
+
+
+    // Then
+    bool ret = m_messageDispatcher->deserializeAndDispatch();
+
+    // Expect
+    EXPECT_TRUE(ret);
+}
+
+
+TEST_F(MessageDispatcherFixture,
+       MessageDispatcherFixture_deserializeAndDispatch_HiveConnectHiveMindHandler_remote_response) {
+    // Given
+    uint16_t agents[] = {1,2};
+    GetAgentsListResponseDTO agentsListResponse(agents, 2);
+    HiveConnectHiveMindApiDTO call(1, agentsListResponse);
+    m_message = MessageDTO(m_remoteUUID, m_uuid, call);
+
+    EXPECT_CALL(m_deserializer, deserializeFromStream(testing::_))
+        .Times(1)
+        .WillOnce(testing::DoAll(testing::SetArgReferee<0>(m_message), testing::Return(true)));
+    EXPECT_CALL(*m_bsp, getHiveMindUUID).WillRepeatedly(testing::Return(m_uuid));
+
+
+    EXPECT_CALL(m_hiveConnectHiveMindHandler, handleMessage(testing::_,testing::_, testing::_)).WillOnce(testing::Return(m_message));
+
+
+    EXPECT_CALL(m_hivemindQueue, push(testing::_)).WillOnce(testing::Return(true));
+
+
+    // Then
+    bool ret = m_messageDispatcher->deserializeAndDispatch();
+
+    // Expect
+    EXPECT_TRUE(ret);
+}
