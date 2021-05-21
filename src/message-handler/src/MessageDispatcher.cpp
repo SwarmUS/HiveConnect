@@ -78,6 +78,8 @@ bool MessageDispatcher::dispatchHiveConnectHiveMindAPI(const MessageDTO& message
             return forwardMessage(response.value());
         }
     }
+    m_logger.log(LogLevel::Error, "Failed dispatch HiveConnectHiveMind message");
+    return false;
 }
 
 bool MessageDispatcher::forwardMessage(const MessageDTO& message) {
