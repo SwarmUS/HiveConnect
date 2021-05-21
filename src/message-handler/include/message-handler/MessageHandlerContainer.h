@@ -17,7 +17,8 @@ NetworkAPIHandler createNetworkApiHandler();
  *@brief create a message dispatcher
  *@return A new message dispatcher */
 MessageDispatcher createMessageDispatcher(IHiveMindHostDeserializer& deserializer,
-                                          INetworkAPIHandler& networkApiHandler);
+                                          INetworkAPIHandler& networkApiHandler,
+                                          IHiveConnectHiveMindApiMessageHandler& hiveConnectHiveMindApiMessageHandler);
 
 /**
  * @brief get the Hivemind output queue

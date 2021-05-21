@@ -16,9 +16,11 @@ NetworkAPIHandler MessageHandlerContainer::createNetworkApiHandler() {
 }
 
 MessageDispatcher MessageHandlerContainer::createMessageDispatcher(
-    IHiveMindHostDeserializer& deserializer, INetworkAPIHandler& networkApiHandler) {
+    IHiveMindHostDeserializer& deserializer, INetworkAPIHandler& networkApiHandler,
+    IHiveConnectHiveMindApiMessageHandler& hiveConnectHiveMindApiMessageHandler) {
     return MessageDispatcher(getHivemindOutputQueue(), getUnicastOutputQueue(),
                              getBroadcastOutputQueue(), deserializer, networkApiHandler,
+                             hiveConnectHiveMindApiMessageHandler,
                              BspContainer::getBSP(), LoggerContainer::getLogger(),
                              NetworkContainer::getNetworkManager());
 }

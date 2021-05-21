@@ -7,6 +7,7 @@
 #include "mocks/NetworkAPIHandlerMock.h"
 #include "mocks/NetworkManagerMock.h"
 #include "mocks/NotificationQueueInterfaceMock.h"
+#include "mocks/HiveConnectHiveMindHandlerMock.h"
 
 class MessageDispatcherFixture : public testing::Test {
   protected:
@@ -16,7 +17,8 @@ class MessageDispatcherFixture : public testing::Test {
     NotificationQueueInterfaceMock<MessageDTO> m_broadcastQueue;
     NotificationQueueInterfaceMock<MessageDTO> m_unicastQueue;
     HiveMindHostDeserializerInterfaceMock m_deserializer;
-    NetworkAPIHandlerMock m_handler;
+    NetworkAPIHandlerMock m_networkApiHandler;
+    HiveConnectHiveMindHandlerMock m_hiveConnectHiveMindHandler;
     NetworkManagerMock m_manager;
     BSPMock* m_bsp;
     LoggerInterfaceMock m_logger;
@@ -41,7 +43,7 @@ class MessageDispatcherFixture : public testing::Test {
 
         m_messageDispatcher =
             new MessageDispatcher(m_hivemindQueue, m_unicastQueue, m_broadcastQueue, m_deserializer,
-                                  m_handler, *m_bsp, m_logger, m_manager);
+                                  m_networkApiHandler, m_hiveConnectHiveMindHandler, *m_bsp, m_logger, m_manager);
 
         m_fRequest = new FunctionCallRequestDTO(NULL, NULL, 0);
         m_uRequest =
@@ -102,7 +104,7 @@ TEST_F(MessageDispatcherFixture, MessageDispatcherFixture_deserializeAndDispatch
         .Times(1)
         .WillOnce(testing::DoAll(testing::SetArgReferee<0>(m_message), testing::Return(true)));
 
-    EXPECT_CALL(m_handler, handleApiCall(testing::_, testing::_))
+    EXPECT_CALL(m_networkApiHandler, handleApiCall(testing::_, testing::_))
         .With(testing::AllOf(NetworkApiDTOMatcher(apiCall)))
         .WillOnce(testing::Return(
             std::optional<NetworkApiDTO>({}))); // Behavior could change in the future.

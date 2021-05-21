@@ -5,6 +5,7 @@ set(TEST_SOURCES
         NetworkApiHandlerUnitTests.cpp
         MessageDispatcherUnitTests.cpp
         NetworkSerializerAndDeserializerIntegrationTests.cpp
+        HiveConnectHiveMindHandlerTests.cpp
         )
 
 set(TEST_HEADERS
@@ -15,6 +16,7 @@ set(TEST_HEADERS
         mocks/LoggerInterfaceMock.h
         mocks/NetworkAPIHandlerMock.h
         mocks/NetworkManagerMock.h
+        mocks/HiveConnectHiveMindHandlerMock.h
 
         DTOMatchers.h
         )
