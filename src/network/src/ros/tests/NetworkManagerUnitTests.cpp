@@ -77,11 +77,10 @@ TEST_F(NetworkManagerFixture, get_statusUUID_broadcastAlreadyStarted) {
     ASSERT_EQ(m_networkManager->getNetworkStatus(), NetworkStatus::Connected);
 }
 
-
 TEST_F(NetworkManagerFixture, get_SwarmList_valid) {
     // Given: a populated neighbor list
-    std::pair<uint16_t, uint32_t> agents[] = {{1,51}, {2,52}, {3,53}};
-    for (auto & agent : agents) {
+    std::pair<uint16_t, uint32_t> agents[] = {{1, 51}, {2, 52}, {3, 53}};
+    for (auto& agent : agents) {
         ASSERT_TRUE(m_networkManager->registerAgent(agent.first, agent.second));
     }
 

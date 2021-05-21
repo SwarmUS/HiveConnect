@@ -4,14 +4,13 @@
 #include "mocks/NetworkManagerMock.h"
 #include "gtest/gtest.h"
 
-
 class HiveConnectHiveMindHandlerTests : public testing::Test {
   protected:
     LoggerInterfaceMock* m_logger;
     HiveConnectHiveMindApiMessageHandler* m_handler;
     NetworkManagerMock* m_networkManager;
 
-    uint16_t agentList[3] = {2,3,4};
+    uint16_t agentList[3] = {2, 3, 4};
     uint8_t agentListLength = 3;
 
     void SetUp() override {
@@ -31,15 +30,14 @@ TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleLocalRe
     // Given: a inbound request from hivemind
     GetAgentsListRequestDTO agentListRequest;
     HiveConnectHiveMindApiDTO req(1, agentListRequest);
-    MessageDTO message(1,1,req);
+    MessageDTO message(1, 1, req);
 
     // Then
     EXPECT_CALL(*m_networkManager, getAgentList(testing::_, testing::_))
-        .Times(1).
-        WillOnce(testing::DoAll(
-            testing::SetArrayArgument<0>(agentList, agentList + agentListLength),
-            testing::Return(agentListLength))
-        );
+        .Times(1)
+        .WillOnce(
+            testing::DoAll(testing::SetArrayArgument<0>(agentList, agentList + agentListLength),
+                           testing::Return(agentListLength)));
 
     // When
     auto ret = m_handler->handleMessage(message.getSourceId(), message.getDestinationId(), req);
@@ -59,20 +57,18 @@ TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleLocalRe
     }
 }
 
-
 TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteRequest) {
     // Given: a inbound request from hivemind
     GetAgentsListRequestDTO agentListRequest;
     HiveConnectHiveMindApiDTO req(1, agentListRequest);
-    MessageDTO message(2,1,req);
+    MessageDTO message(2, 1, req);
 
     // Then
     EXPECT_CALL(*m_networkManager, getAgentList(testing::_, testing::_))
-        .Times(1).
-        WillOnce(testing::DoAll(
-        testing::SetArrayArgument<0>(agentList, agentList + agentListLength),
-        testing::Return(agentListLength))
-    );
+        .Times(1)
+        .WillOnce(
+            testing::DoAll(testing::SetArrayArgument<0>(agentList, agentList + agentListLength),
+                           testing::Return(agentListLength)));
 
     // When
     auto ret = m_handler->handleMessage(message.getSourceId(), message.getDestinationId(), req);
@@ -92,16 +88,15 @@ TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteR
     }
 }
 
-
-
 TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteResponse) {
     // Given: a inbound request from hivemind
     GetAgentsListResponseDTO agentsListResponse(agentList, agentListLength);
     HiveConnectHiveMindApiDTO response(1, agentsListResponse);
-    MessageDTO message(2,1, response);
+    MessageDTO message(2, 1, response);
 
     // When
-    auto ret = m_handler->handleMessage(message.getSourceId(), message.getDestinationId(), response);
+    auto ret =
+        m_handler->handleMessage(message.getSourceId(), message.getDestinationId(), response);
 
     ASSERT_TRUE(ret.has_value());
     ASSERT_EQ(ret.value().getDestinationId(), 1);

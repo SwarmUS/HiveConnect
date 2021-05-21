@@ -63,9 +63,10 @@ class HiveMindDispatcher : public AbstractTask<10 * configMINIMAL_STACK_SIZE> {
         auto& spi = BspContainer::getSpiStm();
         HiveMindHostDeserializer deserializer(spi);
         NetworkAPIHandler networkApiHandler = MessageHandlerContainer::createNetworkApiHandler();
-        HiveConnectHiveMindApiMessageHandler hiveConnectHiveMindApiMessageHandler = MessageHandlerContainer::createHiveConnectHiveMindMessageHandler();
-        MessageDispatcher dispatcher =
-            MessageHandlerContainer::createMessageDispatcher(deserializer, networkApiHandler, hiveConnectHiveMindApiMessageHandler);
+        HiveConnectHiveMindApiMessageHandler hiveConnectHiveMindApiMessageHandler =
+            MessageHandlerContainer::createHiveConnectHiveMindMessageHandler();
+        MessageDispatcher dispatcher = MessageHandlerContainer::createMessageDispatcher(
+            deserializer, networkApiHandler, hiveConnectHiveMindApiMessageHandler);
 
         while (true) {
             if (spi.isConnected()) {
@@ -127,9 +128,10 @@ class UnicastMessageDispatcher : public AbstractTask<10 * configMINIMAL_STACK_SI
 
         NetworkDeserializer deserializer(stream);
         NetworkAPIHandler networkApiHandler = MessageHandlerContainer::createNetworkApiHandler();
-        HiveConnectHiveMindApiMessageHandler hiveConnectHiveMindApiMessageHandler = MessageHandlerContainer::createHiveConnectHiveMindMessageHandler();
-        MessageDispatcher dispatcher =
-            MessageHandlerContainer::createMessageDispatcher(deserializer, networkApiHandler, hiveConnectHiveMindApiMessageHandler);
+        HiveConnectHiveMindApiMessageHandler hiveConnectHiveMindApiMessageHandler =
+            MessageHandlerContainer::createHiveConnectHiveMindMessageHandler();
+        MessageDispatcher dispatcher = MessageHandlerContainer::createMessageDispatcher(
+            deserializer, networkApiHandler, hiveConnectHiveMindApiMessageHandler);
 
         while (NetworkContainer::getNetworkManager().getNetworkStatus() !=
                NetworkStatus::Connected) {
@@ -188,9 +190,10 @@ class BroadcastMessageDispatcher : public AbstractTask<10 * configMINIMAL_STACK_
 
         HiveMindHostDeserializer deserializer(stream);
         NetworkAPIHandler networkApiHandler = MessageHandlerContainer::createNetworkApiHandler();
-        HiveConnectHiveMindApiMessageHandler hiveConnectHiveMindApiMessageHandler = MessageHandlerContainer::createHiveConnectHiveMindMessageHandler();
-        MessageDispatcher dispatcher =
-            MessageHandlerContainer::createMessageDispatcher(deserializer, networkApiHandler, hiveConnectHiveMindApiMessageHandler);
+        HiveConnectHiveMindApiMessageHandler hiveConnectHiveMindApiMessageHandler =
+            MessageHandlerContainer::createHiveConnectHiveMindMessageHandler();
+        MessageDispatcher dispatcher = MessageHandlerContainer::createMessageDispatcher(
+            deserializer, networkApiHandler, hiveConnectHiveMindApiMessageHandler);
 
         while (NetworkContainer::getNetworkManager().getNetworkStatus() !=
                NetworkStatus::Connected) {

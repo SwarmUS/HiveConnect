@@ -15,19 +15,20 @@ NetworkAPIHandler MessageHandlerContainer::createNetworkApiHandler() {
                              NetworkContainer::getNetworkManager());
 }
 
-HiveConnectHiveMindApiMessageHandler MessageHandlerContainer::createHiveConnectHiveMindMessageHandler() {
-    return HiveConnectHiveMindApiMessageHandler(LoggerContainer::getLogger(), NetworkContainer::getNetworkManager());
+HiveConnectHiveMindApiMessageHandler MessageHandlerContainer::
+    createHiveConnectHiveMindMessageHandler() {
+    return HiveConnectHiveMindApiMessageHandler(LoggerContainer::getLogger(),
+                                                NetworkContainer::getNetworkManager());
 }
 
-
 MessageDispatcher MessageHandlerContainer::createMessageDispatcher(
-    IHiveMindHostDeserializer& deserializer, INetworkAPIHandler& networkApiHandler,
+    IHiveMindHostDeserializer& deserializer,
+    INetworkAPIHandler& networkApiHandler,
     IHiveConnectHiveMindApiMessageHandler& hiveConnectHiveMindApiMessageHandler) {
     return MessageDispatcher(getHivemindOutputQueue(), getUnicastOutputQueue(),
                              getBroadcastOutputQueue(), deserializer, networkApiHandler,
-                             hiveConnectHiveMindApiMessageHandler,
-                             BspContainer::getBSP(), LoggerContainer::getLogger(),
-                             NetworkContainer::getNetworkManager());
+                             hiveConnectHiveMindApiMessageHandler, BspContainer::getBSP(),
+                             LoggerContainer::getLogger(), NetworkContainer::getNetworkManager());
 }
 
 NotificationQueue<MessageDTO>& MessageHandlerContainer::getHivemindOutputQueue() {

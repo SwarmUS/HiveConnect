@@ -15,7 +15,7 @@ class AbstractNetworkManager : public INetworkManager {
 
     virtual std::optional<uint32_t> getIPFromAgentID(uint16_t agentID) const final;
     virtual bool registerAgent(uint16_t agentID, uint32_t ip) final;
-    uint16_t getAgentList(uint16_t *agentList, uint8_t maxLength) const final;
+    uint16_t getAgentList(uint16_t* agentList, uint8_t maxLength) const final;
 
   protected:
     ILogger& m_logger;

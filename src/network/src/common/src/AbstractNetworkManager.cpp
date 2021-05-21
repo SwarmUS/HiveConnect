@@ -1,8 +1,8 @@
 #include "AbstractNetworkManager.h"
 
 bool callback(const uint16_t& key, const uint16_t& value, void* context) {
-    (void) value;
-    auto* tuple = static_cast<std::tuple<uint16_t*,uint8_t, uint8_t>*>(context);
+    (void)value;
+    auto* tuple = static_cast<std::tuple<uint16_t*, uint8_t, uint8_t>*>(context);
     auto& [array, index, maxLength] = *tuple;
     if (index >= maxLength) {
         return false;
@@ -34,11 +34,11 @@ bool AbstractNetworkManager::registerAgent(uint16_t agentID, uint32_t ip) {
     return false;
 }
 
-uint16_t AbstractNetworkManager::getAgentList(uint16_t* agentList, uint8_t maxLength) const  {
+uint16_t AbstractNetworkManager::getAgentList(uint16_t* agentList, uint8_t maxLength) const {
     uint8_t index = 0;
-    std::tuple<uint16_t*,uint8_t, uint8_t> tuple = std::make_tuple(agentList, index, maxLength);
+    std::tuple<uint16_t*, uint8_t, uint8_t> tuple = std::make_tuple(agentList, index, maxLength);
     m_hashMap.forEach(
-        reinterpret_cast<bool (*)(const unsigned short&, const unsigned int&, void*)>(callback), &tuple);
+        reinterpret_cast<bool (*)(const unsigned short&, const unsigned int&, void*)>(callback),
+        &tuple);
     return std::get<1>(tuple);
 }
-

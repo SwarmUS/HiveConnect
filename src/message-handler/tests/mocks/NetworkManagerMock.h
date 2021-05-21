@@ -13,7 +13,10 @@ class NetworkManagerMock : public INetworkManager {
     MOCK_METHOD(uint32_t, getSelfIP, (), (const, override));
     MOCK_METHOD(bool, registerAgent, (uint16_t agentID, uint32_t ip), (override));
     MOCK_METHOD(std::optional<uint32_t>, getIPFromAgentID, (uint16_t agentID), (const, override));
-    MOCK_METHOD(uint16_t, getAgentList, (uint16_t* agentList, uint8_t maxLength), (const, override));
+    MOCK_METHOD(uint16_t,
+                getAgentList,
+                (uint16_t * agentList, uint8_t maxLength),
+                (const, override));
 };
 
 #endif // HIVE_CONNECT_NETWORKMANAGERMOCK_H
