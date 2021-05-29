@@ -91,6 +91,18 @@ TEST_F(NetworkManagerFixture, get_SwarmList_valid) {
     }
 }
 
+TEST_F(NetworkManagerFixture, get_SwarmList_too_many_neighbors) {
+    // Given: a populated neighbor list
+    std::pair<uint16_t, uint32_t> agents[] = {{1, 51}, {2, 52}, {3, 53}};
+    for (auto& agent : agents) {
+        ASSERT_TRUE(m_networkManager->registerAgent(agent.first, agent.second));
+    }
+
+    uint16_t agentList[10] = {};
+    ASSERT_EQ(m_networkManager->getAgentList(agentList, 1), 1);
+    ASSERT_EQ(agentList[0], agents[0].first);
+}
+
 // Main for ros test
 
 int main(int argc, char** argv) {

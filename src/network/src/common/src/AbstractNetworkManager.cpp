@@ -1,6 +1,6 @@
 #include "AbstractNetworkManager.h"
 
-bool callback(const uint16_t& key, const uint16_t& value, void* context) {
+bool callback(const uint16_t& key, uint32_t& value, void* context) {
     (void)value;
     auto* tuple = static_cast<std::tuple<uint16_t*, uint8_t, uint8_t>*>(context);
     auto& [array, index, maxLength] = *tuple;
@@ -37,8 +37,10 @@ bool AbstractNetworkManager::registerAgent(uint16_t agentID, uint32_t ip) {
 uint16_t AbstractNetworkManager::getAgentList(uint16_t* agentList, uint8_t maxLength) const {
     uint8_t index = 0;
     std::tuple<uint16_t*, uint8_t, uint8_t> tuple = std::make_tuple(agentList, index, maxLength);
-    m_hashMap.forEach(
-        reinterpret_cast<bool (*)(const unsigned short&, const unsigned int&, void*)>(callback),
-        &tuple);
+    if (!m_hashMap.forEach(callback, &tuple)) {
+        m_logger.log(LogLevel::Warn,
+                     "Too many neighbors in hash map to place them in array of %d agents",
+                     maxLength);
+    }
     return std::get<1>(tuple);
 }
