@@ -45,6 +45,14 @@ class INetworkManager {
      * registered
      */
     virtual bool registerAgent(uint16_t agentID, uint32_t ip) = 0;
+
+    /**
+     * @brief Get the the agents lists as
+     * @param [in] agentList the array to populate with agent IDs
+     * @param [in] maxLength The maximum size of the array
+     * @return the number of agents added to the array
+     */
+    virtual uint16_t getAgentList(uint16_t* agentList, uint8_t maxLength) const = 0;
 };
 
 #endif // HIVE_CONNECT_INETWORKMANAGER_H

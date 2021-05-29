@@ -8,12 +8,14 @@ set(LIB_SOURCES
     src/MessageHandlerContainer.cpp
     src/NetworkSerializer.cpp
     src/NetworkDeserializer.cpp
+    src/HiveConnectHiveMindMessageHandler.cpp
 )
 
 set(LIB_HEADERS
     include/message-handler/IMessageDispatcher.h
     include/message-handler/IMessageSender.h
     include/message-handler/INetworkAPIHandler.h
+    include/message-handler/IHiveConnectHiveMindMessageHandler.h
 
 
     include/message-handler/MessageDispatcher.h
@@ -21,6 +23,7 @@ set(LIB_HEADERS
     include/message-handler/NetworkAPIHandler.h
     include/message-handler/NetworkSerializer.h
     include/message-handler/NetworkDeserializer.h
+    include/message-handler/HiveConnectHiveMindMessageHandler.h
 )
 
 add_library(${LIB_NAME} STATIC ${LIB_HEADERS} ${LIB_SOURCES})

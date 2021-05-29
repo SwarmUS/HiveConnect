@@ -1,19 +1,22 @@
 #include "MessageDispatcher.h"
 #include "Task.h"
 
-MessageDispatcher::MessageDispatcher(ICircularQueue<MessageDTO>& hivemindOutputQ,
-                                     ICircularQueue<MessageDTO>& unicastOutputQ,
-                                     ICircularQueue<MessageDTO>& broadcastOutputQ,
-                                     IHiveMindHostDeserializer& deserializer,
-                                     INetworkAPIHandler& handler,
-                                     IBSP& bsp,
-                                     ILogger& logger,
-                                     INetworkManager& manager) :
+MessageDispatcher::MessageDispatcher(
+    ICircularQueue<MessageDTO>& hivemindOutputQ,
+    ICircularQueue<MessageDTO>& unicastOutputQ,
+    ICircularQueue<MessageDTO>& broadcastOutputQ,
+    IHiveMindHostDeserializer& deserializer,
+    INetworkAPIHandler& networkApiHandler,
+    IHiveConnectHiveMindApiMessageHandler& hiveConnectHiveMindApiMessageHandler,
+    IBSP& bsp,
+    ILogger& logger,
+    INetworkManager& manager) :
     m_hivemindOutputQueue(hivemindOutputQ),
     m_unicastOutputQueue(unicastOutputQ),
     m_broadcastOutputQueue(broadcastOutputQ),
     m_deserializer(deserializer),
-    m_requestHandler(handler),
+    m_networkApiHandler(networkApiHandler),
+    m_HiveConnectHiveMindMessageHandler(hiveConnectHiveMindApiMessageHandler),
     m_bsp(bsp),
     m_logger(logger),
     m_manager(manager) {}
@@ -30,6 +33,9 @@ bool MessageDispatcher::deserializeAndDispatch() {
         // Handle network API call
         else if (const auto* apiCall = std::get_if<NetworkApiDTO>(&message.getMessage())) {
             return dispatchNetworkAPI(message, *apiCall);
+        } else if (const auto* apiCall =
+                       std::get_if<HiveConnectHiveMindApiDTO>(&message.getMessage())) {
+            return dispatchHiveConnectHiveMindAPI(message, *apiCall);
         } else {
             return forwardMessage(message);
         }
@@ -40,7 +46,7 @@ bool MessageDispatcher::deserializeAndDispatch() {
 
 bool MessageDispatcher::dispatchNetworkAPI(const MessageDTO& message,
                                            const NetworkApiDTO& apiCall) {
-    auto reply = m_requestHandler.handleApiCall(message.getSourceId(), apiCall);
+    auto reply = m_networkApiHandler.handleApiCall(message.getSourceId(), apiCall);
     if (std::holds_alternative<ErrorNum>(reply)) {
         // An empty optional means an error occured
         m_logger.log(LogLevel::Error, "Failed to handle NetworkApi call");
@@ -58,6 +64,21 @@ bool MessageDispatcher::dispatchNetworkAPI(const MessageDTO& message,
         MessageDTO msg(m_bsp.getHiveMindUUID(), message.getSourceId(), response->value());
         return forwardMessage(msg);
     }
+    return false;
+}
+
+bool MessageDispatcher::dispatchHiveConnectHiveMindAPI(const MessageDTO& message,
+                                                       const HiveConnectHiveMindApiDTO& apiCall) {
+    if (message.getDestinationId() != m_bsp.getHiveMindUUID()) {
+        return forwardMessage(message);
+    } else {
+        auto response = m_HiveConnectHiveMindMessageHandler.handleMessage(
+            message.getSourceId(), message.getDestinationId(), apiCall);
+        if (response) {
+            return forwardMessage(response.value());
+        }
+    }
+    m_logger.log(LogLevel::Error, "Failed dispatch HiveConnectHiveMind message");
     return false;
 }
 

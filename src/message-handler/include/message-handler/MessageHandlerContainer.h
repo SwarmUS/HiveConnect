@@ -1,6 +1,7 @@
 #ifndef HIVE_CONNECT_MESSAGEHANDLERCONTAINER_H
 #define HIVE_CONNECT_MESSAGEHANDLERCONTAINER_H
 
+#include "HiveConnectHiveMindMessageHandler.h"
 #include "MessageDispatcher.h"
 #include "NetworkAPIHandler.h"
 #include "NotificationQueue.h"
@@ -13,11 +14,15 @@ namespace MessageHandlerContainer {
  */
 NetworkAPIHandler createNetworkApiHandler();
 
+HiveConnectHiveMindApiMessageHandler createHiveConnectHiveMindMessageHandler();
+
 /**
  *@brief create a message dispatcher
  *@return A new message dispatcher */
-MessageDispatcher createMessageDispatcher(IHiveMindHostDeserializer& deserializer,
-                                          INetworkAPIHandler& networkApiHandler);
+MessageDispatcher createMessageDispatcher(
+    IHiveMindHostDeserializer& deserializer,
+    INetworkAPIHandler& networkApiHandler,
+    IHiveConnectHiveMindApiMessageHandler& hiveConnectHiveMindApiMessageHandler);
 
 /**
  * @brief get the Hivemind output queue
