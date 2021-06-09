@@ -2,11 +2,13 @@
 #define USERINTERFACE_H
 
 #include "bsp/IUserInterface.h"
+#include "bsp/IBSP.h"
 #include <utility>
 
 class UserInterface : public IUserInterface {
   public:
-    UserInterface() = default;
+    UserInterface(const IBSP& bsp);
+    
     ~UserInterface() override = default;
 
     int print(const char* format, ...) const override;
@@ -23,6 +25,7 @@ class UserInterface : public IUserInterface {
 
   private:
     static std::pair<char*, int> generateBuffer(const char* format, va_list args);
+    const IBSP& m_bsp;
 };
 
 #endif // HIVE_CONNECT_USERINTERFACE_H

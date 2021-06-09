@@ -14,7 +14,7 @@ IBSP& getBSP() {
 }
 
 IUserInterface& getUserInterface() {
-    static UserInterface s_ui;
+    static UserInterface s_ui(getBSP());
 
     return s_ui;
 }
