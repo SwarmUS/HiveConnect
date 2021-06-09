@@ -4,6 +4,7 @@
 #include "bsp/IUserInterface.h"
 #include "bsp/IBSP.h"
 #include <utility>
+#include <string>
 
 class UserInterface : public IUserInterface {
   public:
@@ -24,7 +25,7 @@ class UserInterface : public IUserInterface {
     int printError(const char* format, va_list args) const override;
 
   private:
-    static std::pair<char*, int> generateBuffer(const char* format, va_list args);
+    static std::pair<std::string, int> generateBuffer(const char* format, va_list args);
     const IBSP& m_bsp;
 };
 
