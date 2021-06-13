@@ -69,8 +69,9 @@ bool MessageDispatcher::forwardMessage(const MessageDTO& message) {
     }
 
     if (message.getDestinationId() == 0 && message.getSourceId() == m_bsp.getHiveMindUUID()) {
-    // Hivemind is sending message to broadcast
-        m_logger.log(LogLevel::Info, "Forwarded message to broadcast from HC %d, msg from %d", m_bsp.getHiveMindUUID() , message.getSourceId());
+        // Hivemind is sending message to broadcast
+        m_logger.log(LogLevel::Info, "Forwarded message to broadcast from HC %d, msg from %d",
+                     m_bsp.getHiveMindUUID(), message.getSourceId());
         return m_broadcastOutputQueue.push(message);
     }
 

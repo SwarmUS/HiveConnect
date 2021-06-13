@@ -1,15 +1,15 @@
 #ifndef USERINTERFACE_H
 #define USERINTERFACE_H
 
-#include "bsp/IUserInterface.h"
 #include "bsp/IBSP.h"
-#include <utility>
+#include "bsp/IUserInterface.h"
 #include <string>
+#include <utility>
 
 class UserInterface : public IUserInterface {
   public:
     UserInterface(const IBSP& bsp);
-    
+
     ~UserInterface() override = default;
 
     int print(const char* format, ...) const override;

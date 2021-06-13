@@ -2,8 +2,7 @@
 #include "ros/ros.h"
 #include <cstdarg>
 
-UserInterface::UserInterface(const IBSP& bsp) : m_bsp(bsp)
-{}
+UserInterface::UserInterface(const IBSP& bsp) : m_bsp(bsp) {}
 
 int UserInterface::print(const char* format, va_list args) const {
     int ret = vprintf(format, args);
@@ -51,7 +50,6 @@ std::pair<std::string, int> UserInterface::generateBuffer(const char* format, va
     va_copy(vaCopy, args);
     const int requiredLength = std::vsnprintf(NULL, 0, format, vaCopy);
     va_end(vaCopy);
-
 
     // Create a string with adequate length
     retVal.first.resize((size_t)requiredLength);

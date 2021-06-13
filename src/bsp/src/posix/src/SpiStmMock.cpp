@@ -11,7 +11,8 @@ SpiStmMock::SpiStmMock(ILogger& logger, const char* address, int port) : m_logge
     m_address.sin_addr.s_addr = (inet_addr(address));
 
     while (m_socket < 0) {
-        m_logger.log(LogLevel::Error, "Attempting connection to HiveMind. Address: %s, port: %d", address, port);
+        m_logger.log(LogLevel::Error, "Attempting connection to HiveMind. Address: %s, port: %d",
+                     address, port);
         this->connect();
         Task::delay(500);
     }
