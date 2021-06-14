@@ -10,9 +10,9 @@ class BSPMock : public IBSP {
     explicit BSPMock(const uint16_t& boardID) : m_boardID(boardID) { setActions(); }
 
     MOCK_METHOD(void, initChip, (), (override));
-    MOCK_METHOD(uint16_t, getHiveMindUUID, (), (override));
+    MOCK_METHOD(uint16_t, getHiveMindUUID, (), (const override));
     MOCK_METHOD(void, setHiveMindUUID, (uint16_t), (override));
-    MOCK_METHOD(ChipInfo, getChipInfo, (), (override));
+    MOCK_METHOD(ChipInfo, getChipInfo, (), (const override));
 
     uint16_t m_boardID;
 

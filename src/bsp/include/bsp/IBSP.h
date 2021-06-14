@@ -23,13 +23,13 @@ class IBSP {
      * @brief Get the chip from the BSP class
      * @return The chip info for the BSP initiated
      */
-    virtual ChipInfo getChipInfo() = 0;
+    virtual ChipInfo getChipInfo() const = 0;
 
     /**
      * @brief Get the uuid obtained from HiveMind after greeting
      * @return The uuid value
      */
-    virtual uint16_t getHiveMindUUID() = 0;
+    virtual uint16_t getHiveMindUUID() const = 0;
 
     /**
      * @brief Store the uuid obtained from HiveMind after greeting

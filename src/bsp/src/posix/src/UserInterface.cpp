@@ -2,6 +2,8 @@
 #include "ros/ros.h"
 #include <cstdarg>
 
+UserInterface::UserInterface(const IBSP& bsp) : m_bsp(bsp) {}
+
 int UserInterface::print(const char* format, va_list args) const {
     int ret = vprintf(format, args);
     printf("\n\r");
@@ -18,36 +20,41 @@ int UserInterface::print(const char* format, ...) const {
 }
 
 int UserInterface::printInfo(const char* format, va_list args) const {
-    const int bufferSize = 512;
-    char buffer[bufferSize];
-    int ret = vsnprintf(buffer, bufferSize, format, args);
-    ROS_INFO("%s", buffer);
-    return ret;
+    std::pair<std::string, int> statement = UserInterface::generateBuffer(format, args);
+    ROS_INFO("[HC: %d] %s", m_bsp.getHiveMindUUID(), statement.first.data());
+    return statement.second;
 }
 
 int UserInterface::printDebug(const char* format, va_list args) const {
-    std::pair<char*, int> statement = UserInterface::generateBuffer(format, args);
-    ROS_DEBUG("%s", statement.first);
+    std::pair<std::string, int> statement = UserInterface::generateBuffer(format, args);
+    ROS_DEBUG("[HC: %d] %s", m_bsp.getHiveMindUUID(), statement.first.data());
     return statement.second;
 };
 
 int UserInterface::printWarning(const char* format, va_list args) const {
-    std::pair<char*, int> statement = UserInterface::generateBuffer(format, args);
-    ROS_WARN("%s", statement.first);
+    std::pair<std::string, int> statement = UserInterface::generateBuffer(format, args);
+    ROS_WARN("[HC: %d] %s", m_bsp.getHiveMindUUID(), statement.first.data());
     return statement.second;
 };
 
 int UserInterface::printError(const char* format, va_list args) const {
-    std::pair<char*, int> statement = UserInterface::generateBuffer(format, args);
-    ROS_ERROR("%s", statement.first);
+    std::pair<std::string, int> statement = UserInterface::generateBuffer(format, args);
+    ROS_ERROR("[HC: %d] %s", m_bsp.getHiveMindUUID(), statement.first.data());
     return statement.second;
 }
 
-std::pair<char*, int> UserInterface::generateBuffer(const char* format, va_list args) {
-    std::pair<char*, int> retVal;
-    const int bufferSize = 512;
-    char buffer[bufferSize];
-    retVal.second = vsnprintf(buffer, bufferSize, format, args);
-    retVal.first = buffer;
+std::pair<std::string, int> UserInterface::generateBuffer(const char* format, va_list args) {
+    std::pair<std::string, int> retVal;
+
+    va_list vaCopy;
+    va_copy(vaCopy, args);
+    const int requiredLength = std::vsnprintf(NULL, 0, format, vaCopy);
+    va_end(vaCopy);
+
+    // Create a string with adequate length
+    retVal.first.resize((size_t)requiredLength);
+
+    // Build a new string
+    retVal.second = vsnprintf(retVal.first.data(), retVal.first.size() + 1, format, args);
     return retVal;
 }

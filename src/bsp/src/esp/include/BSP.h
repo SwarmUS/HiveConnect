@@ -10,8 +10,8 @@ class BSP : public IBSP {
     ~BSP() override = default;
 
     void initChip() override;
-    ChipInfo getChipInfo() override;
-    uint16_t getHiveMindUUID() override;
+    ChipInfo getChipInfo() const override;
+    uint16_t getHiveMindUUID() const override;
     void setHiveMindUUID(uint16_t uuid) override;
 
   private:
