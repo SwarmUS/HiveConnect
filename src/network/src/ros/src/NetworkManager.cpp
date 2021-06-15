@@ -21,6 +21,6 @@ NetworkStatus NetworkManager::getNetworkStatus() const {
 
 uint32_t NetworkManager::getSelfIP() const {
     ros::NodeHandle nodeHandle("~");
-    uint32_t port = nodeHandle.param("tcp_listen_port", 54321);
+    uint32_t port = nodeHandle.param("tcp_listen_port", 9001);
     return port;
 }

@@ -21,7 +21,7 @@ INetworkManager& NetworkContainer::getNetworkManager() {
 
 INetworkInputStream& NetworkContainer::getNetworkInputStream() {
     ros::NodeHandle nodeHandle("~");
-    int port = nodeHandle.param("tcp_listen_port", 54321);
+    int port = nodeHandle.param("tcp_listen_port", 9001);
     static NetworkInputStream s_inputStream(LoggerContainer::getLogger(), port);
 
     static std::once_flag s_startOnce;
