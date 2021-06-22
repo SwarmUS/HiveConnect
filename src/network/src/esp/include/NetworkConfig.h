@@ -2,7 +2,6 @@
 #define HIVE_CONNECT_NETWORKCONFIG_H
 
 #include "esp_event.h"
-#include "nvs.h"
 
 /**
  * @brief Namespace for functions to get different configuration element for the netowrk
@@ -20,7 +19,7 @@ bool initNetworkConfig();
 wifi_mode_t getMode();
 
 /**
- * @brief Get the network configuration (ssid, password, etc...)
+ * @brief Get the network default configuration (ssid, password, etc...)
  * @return
  */
 wifi_config_t* getDefaultNetworkConfig();
@@ -48,12 +47,6 @@ uint16_t getBroadcastInputPort();
  * @return The port number
  */
 uint16_t getBroadcastOutputPort();
-
-/**
- * @brief Writes the network configuration in the persisent storage
- * @return True if successful, false otherwise
- */
-bool persistNetworkConfig();
 } // namespace NetworkConfig
 
 #endif // HIVE_CONNECT_NETWORKCONFIG_H

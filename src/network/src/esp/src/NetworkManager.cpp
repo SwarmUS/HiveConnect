@@ -124,7 +124,6 @@ void NetworkManager::execute() {
     case NetworkManagerState::CONNECTED:
         m_logger.log(LogLevel::Info, "Connected to network!");
         // Only write network config on successful connections
-        NetworkConfig::persistNetworkConfig();
         if (!m_server.start()) {
             m_logger.log(LogLevel::Info, "Failed to start TCP server socket");
         } else if (!NetworkContainer::getNetworkBroadcast().start()) {
