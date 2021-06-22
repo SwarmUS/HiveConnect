@@ -3,6 +3,7 @@
 
 #include "IBSP.h"
 #include "ISpiStm.h"
+#include "IStorage.h"
 #include "IUserInterface.h"
 #include <memory>
 
@@ -22,6 +23,11 @@ IUserInterface& getUserInterface();
  * @brief Returns the spi drive instance for the STM
  */
 ISpiStm& getSpiStm();
+
+/**
+ * @brief Returns the storage instance
+ */
+IStorage& getStorage();
 } // namespace BspContainer
 
 #endif // FACTORY_H

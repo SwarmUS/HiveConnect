@@ -5,12 +5,14 @@ set(LIB_SOURCES
         src/BSP.cpp
         src/Container.cpp
         src/UserInterface.cpp
+        src/Storage.cpp
         src/SpiStm.cpp
         hal/spi_callbacks.c)
 
 set(LIB_PRIVATE_HEADERS
         include/BSP.h
         include/UserInterface.h
+        include/Storage.h
         hal/pin_map.h
         hal/spi_callbacks.h)
 

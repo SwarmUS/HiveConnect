@@ -10,6 +10,7 @@
  */
 
 constexpr bool gs_isRouter = @IS_ROUTER@;
+constexpr bool gs_useMesh = @USE_MESH@;
 #define DEFAULT_SSID "@SSID@"
 #define DEFAULT_PASSWORD "@PASSWORD@"
 #define DEFAULT_AUTH_MODE @AUTH_MODE@
