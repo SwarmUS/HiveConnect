@@ -25,14 +25,14 @@ wifi_config_t* NetworkConfig::getDefaultNetworkConfig() {
     if (storage.getIsRouter()) {
         // +1 to have the \0 for the string
         storage.getSSID((char*)s_wifiConfig.ap.ssid, sizeof(s_wifiConfig.ap.ssid));
-        storage.getSSID((char*)s_wifiConfig.ap.password, sizeof(s_wifiConfig.ap.password));
+        storage.getPassword((char*)s_wifiConfig.ap.password, sizeof(s_wifiConfig.ap.password));
         s_wifiConfig.ap.authmode = DEFAULT_AUTH_MODE;
         s_wifiConfig.ap.max_connection = UINT8_MAX;
     }
 
     // +1 to have the \0 for the string
     storage.getSSID((char*)s_wifiConfig.sta.ssid, sizeof(s_wifiConfig.ap.ssid));
-    storage.getSSID((char*)s_wifiConfig.sta.password, sizeof(s_wifiConfig.ap.password));
+    storage.getPassword((char*)s_wifiConfig.sta.password, sizeof(s_wifiConfig.ap.password));
 
     s_wifiConfig.sta.scan_method = WIFI_FAST_SCAN;
     s_wifiConfig.sta.sort_method = WIFI_CONNECT_AP_BY_SIGNAL;

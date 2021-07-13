@@ -55,8 +55,8 @@ bool Storage::getPassword(char* password, size_t maxLength) {
         return false;
     }
     if (err == ESP_ERR_NVS_NOT_FOUND) {
-        m_logger.log(LogLevel::Info, "SSID not found in storage, getting default");
-        strlcpy(password, DEFAULT_SSID, strlen(DEFAULT_SSID) + 1); // +1 for \0
+        m_logger.log(LogLevel::Info, "Password not found in storage, getting default");
+        strlcpy(password, DEFAULT_PASSWORD, strlen(DEFAULT_PASSWORD) + 1); // +1 for \0
         return true;
     }
     return false;
@@ -69,7 +69,8 @@ bool Storage::getIsRouter() {
         return (bool)val;
     }
     if (err == ESP_ERR_NVS_NOT_FOUND) {
-        m_logger.log(LogLevel::Info, "IsRouter not found in storage, using default of %d", gs_isRouter);
+        m_logger.log(LogLevel::Info, "IsRouter not found in storage, using default of %d",
+                     gs_isRouter);
         return gs_isRouter;
     } else {
         m_logger.log(LogLevel::Warn, "Error occurred while trying to get router flag");
