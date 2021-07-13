@@ -17,6 +17,7 @@ set(TEST_HEADERS
         mocks/NetworkAPIHandlerMock.h
         mocks/NetworkManagerMock.h
         mocks/HiveConnectHiveMindHandlerMock.h
+        mocks/StorageMock.h
 
         DTOMatchers.h
         )

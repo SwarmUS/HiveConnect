@@ -2,6 +2,7 @@
 #include "mocks/BSPMock.h"
 #include "mocks/LoggerInterfaceMock.h"
 #include "mocks/NetworkManagerMock.h"
+#include "mocks/StorageMock.h"
 #include "gtest/gtest.h"
 
 class HiveConnectHiveMindHandlerTests : public testing::Test {
@@ -9,6 +10,7 @@ class HiveConnectHiveMindHandlerTests : public testing::Test {
     LoggerInterfaceMock* m_logger;
     HiveConnectHiveMindApiMessageHandler* m_handler;
     NetworkManagerMock* m_networkManager;
+    StorageMock* m_storage;
 
     uint16_t agentList[3] = {2, 3, 4};
     uint8_t agentListLength = 3;
@@ -16,13 +18,16 @@ class HiveConnectHiveMindHandlerTests : public testing::Test {
     void SetUp() override {
         m_logger = new LoggerInterfaceMock();
         m_networkManager = new NetworkManagerMock();
-        m_handler = new HiveConnectHiveMindApiMessageHandler(*m_logger, *m_networkManager);
+        m_storage = new StorageMock();
+        m_handler =
+            new HiveConnectHiveMindApiMessageHandler(*m_logger, *m_networkManager, *m_storage);
     }
 
     void TearDown() override {
         delete m_logger;
         delete m_handler;
         delete m_networkManager;
+        delete m_storage;
     }
 };
 
@@ -88,6 +93,17 @@ TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteR
     }
 }
 
+TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleNetworkConfigGetRequest) {
+    HiveConnectNetworkConfigGetRequestDTO getRequestDto;
+    HiveConnectHiveMindApiDTO api(1, getRequestDto);
+    MessageDTO msg(1, 1, api);
+
+    auto ret = m_handler->handleMessage(msg.getSourceId(), msg.getDestinationId(), api);
+
+    ASSERT_TRUE(ret.has_value());
+    ASSERT_EQ()
+}
+
 TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteResponse) {
     // Given: a inbound request from hivemind
     GetAgentsListResponseDTO agentsListResponse(agentList, agentListLength);
@@ -112,3 +128,5 @@ TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteR
         EXPECT_EQ(msg->getAgents().at(i), agentList[i]);
     }
 }
+
+TEST
