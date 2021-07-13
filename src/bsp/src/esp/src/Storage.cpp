@@ -69,7 +69,7 @@ bool Storage::getIsRouter() {
         return (bool)val;
     }
     if (err == ESP_ERR_NVS_NOT_FOUND) {
-        m_logger.log(LogLevel::Info, "IsRouter not found in storage");
+        m_logger.log(LogLevel::Info, "IsRouter not found in storage, using default of %d", gs_isRouter);
         return gs_isRouter;
     } else {
         m_logger.log(LogLevel::Warn, "Error occurred while trying to get router flag");

@@ -1,5 +1,5 @@
 #include "NetworkConfig.h"
-#include "bsp/DefaultNetworkConfig.h"
+#include "DefaultNetworkConfig.h"
 #include "bsp/Container.h"
 #include "esp_event.h"
 #include "esp_log.h"
@@ -22,7 +22,6 @@ wifi_config_t* NetworkConfig::getDefaultNetworkConfig() {
     static wifi_config_t s_wifiConfig;
     IStorage& storage = BspContainer::getStorage();
 
-    bool isRouter = false;
     if (storage.getIsRouter()) {
         // +1 to have the \0 for the string
         storage.getSSID((char*)s_wifiConfig.ap.ssid, sizeof(s_wifiConfig.ap.ssid));
