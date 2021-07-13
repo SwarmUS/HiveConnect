@@ -9,8 +9,8 @@ class Storage : public IStorage {
   public:
     Storage(ILogger& logger);
 
-    bool storeSSID(char* ssid) override;
-    bool storePassword(char* password) override;
+    bool storeSSID(const char* ssid) override;
+    bool storePassword(const char* password) override;
     bool storeIsRouter(bool isRouter) override;
     bool storeMeshEnabled(bool meshEnabled) override;
 

@@ -7,8 +7,8 @@ class IStorage {
   public:
     virtual ~IStorage() = default;
 
-    virtual bool storeSSID(char* ssid) = 0;
-    virtual bool storePassword(char* password) = 0;
+    virtual bool storeSSID(const char* ssid) = 0;
+    virtual bool storePassword(const char* password) = 0;
     virtual bool storeIsRouter(bool isRouter) = 0;
     virtual bool storeMeshEnabled(bool meshEnabled) = 0;
 

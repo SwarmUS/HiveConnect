@@ -12,11 +12,11 @@ Storage::Storage(ILogger& logger) : m_logger(logger) {
     }
 }
 
-bool Storage::storeSSID(char* ssid) {
+bool Storage::storeSSID(const char* ssid) {
     return nvs_set_str(m_networkStorageHandle, SSID_KEY, ssid) == ESP_OK;
 }
 
-bool Storage::storePassword(char* password) {
+bool Storage::storePassword(const char* password) {
     return nvs_set_str(m_networkStorageHandle, PASSWORD_KEY, password) == ESP_OK;
 }
 
