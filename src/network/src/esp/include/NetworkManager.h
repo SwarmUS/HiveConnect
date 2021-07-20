@@ -20,6 +20,7 @@ class NetworkManager : public AbstractNetworkManager {
     ~NetworkManager() = default;
 
     void start() override;
+    void restart() override;
     NetworkStatus getNetworkStatus() const override;
     uint32_t getSelfIP() const override;
 

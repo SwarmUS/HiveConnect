@@ -18,6 +18,11 @@ class INetworkManager {
     virtual void start() = 0;
 
     /**
+     * @brief Restarts the network even if connected. Used to reload the network config.
+     */
+    virtual void restart() = 0;
+
+    /**
      * @brief Gets the status of the network
      */
     virtual NetworkStatus getNetworkStatus() const = 0;

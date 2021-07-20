@@ -85,16 +85,26 @@ void NetworkManager::eventHandler(void* context,
     }
 }
 
-void NetworkManager::start() {
-    initNetworkInterface();
-    m_networkExecuteTask.start();
+void NetworkManager::start() { m_networkExecuteTask.start(); }
+
+void NetworkManager::restart() {
+    esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &eventHandler);
+    esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, &eventHandler);
+
+    esp_netif_deinit();
+    esp_netif_destroy(m_networkInterfaceHandle);
+    esp_wifi_stop();
+    esp_wifi_deinit();
+
+    esp_netif_dhcps_stop(m_networkInterfaceHandle);
+    m_state = NetworkManagerState::INIT;
 }
 
 NetworkStatus NetworkManager::getNetworkStatus() const {
     switch (m_state) {
     case NetworkManagerState::LOOKING_FOR_NETWORK:
-        return NetworkStatus::Connecting;
     case NetworkManagerState::CONNECTED:
+        return NetworkStatus::Connecting;
     case NetworkManagerState::RUNNING:
         return NetworkStatus::Connected;
 
@@ -111,6 +121,7 @@ void NetworkManager::execute() {
     switch (m_state) {
 
     case NetworkManagerState::INIT:
+        initNetworkInterface();
         m_logger.log(LogLevel::Info, "Connecting to network...");
         ESP_ERROR_CHECK(esp_wifi_set_mode(NetworkConfig::getMode()));
         ESP_ERROR_CHECK(esp_wifi_set_config(NetworkConfig::getInterface(),
@@ -140,10 +151,7 @@ void NetworkManager::execute() {
         m_logger.log(LogLevel::Error, "Handling the network error");
         m_server.stop();
 
-        // Behavior to validate
-        ESP_ERROR_CHECK(esp_wifi_stop());
-
-        m_state = NetworkManagerState::INIT;
+        restart();
         break;
     default:
         m_logger.log(LogLevel::Warn, "Reached unintended case within network manager");
