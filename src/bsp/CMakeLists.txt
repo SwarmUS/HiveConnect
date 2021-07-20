@@ -13,11 +13,16 @@ set(LIB_HEADERS
         include/bsp/ISpiStm.h
         include/bsp/IStorage.h)
 
-include(DefaultNetworkConfig.cmake)
-configure_file(include/bsp/DefaultNetworkConfig.in.h include/DefaultNetworkConfig.h)
-
 add_library(${LIB_NAME} STATIC ${LIB_HEADERS})
 add_library(${LIB_ALIAS} ALIAS ${LIB_NAME})
+
+include(DefaultNetworkConfig.cmake)
+configure_file(include/bsp/DefaultNetworkConfig.in.h include/DefaultNetworkConfig.h)
+set(FORCE_DEFAULTS OFF)
+if(${FORCE_DEFAULTS})
+    message("-- Using default values for network config")
+    target_compile_definitions(${LIB_NAME} PUBLIC FORCE_DEFAULTS)
+endif()
 
 target_include_directories(${LIB_NAME}
         PUBLIC

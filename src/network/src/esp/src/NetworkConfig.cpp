@@ -25,17 +25,12 @@ wifi_config_t* NetworkConfig::getDefaultNetworkConfig() {
     IStorage& storage = BspContainer::getStorage();
 
     if (storage.getIsRouter()) {
-        // +1 to have the \0 for the string
         storage.getSSID((char*)g_wifiConfig.ap.ssid, sizeof(g_wifiConfig.ap.ssid));
         storage.getPassword((char*)g_wifiConfig.ap.password, sizeof(g_wifiConfig.ap.password));
         g_wifiConfig.ap.authmode = DEFAULT_AUTH_MODE;
         g_wifiConfig.ap.max_connection = UINT8_MAX;
     }
-    else {
-        g_wifiConfig.ap.ssid[0] = '\0'; // Used to reset value in case of change
-    }
 
-    // +1 to have the \0 for the string
     storage.getSSID((char*)g_wifiConfig.sta.ssid, sizeof(g_wifiConfig.ap.ssid));
     storage.getPassword((char*)g_wifiConfig.sta.password, sizeof(g_wifiConfig.ap.password));
 
@@ -59,11 +54,3 @@ uint16_t NetworkConfig::getCommunicationPort() { return (uint16_t)DEFAULT_UNICAS
 uint16_t NetworkConfig::getBroadcastInputPort() { return (uint16_t)DEFAULT_BROADCAST_INPUT_PORT; }
 
 uint16_t NetworkConfig::getBroadcastOutputPort() { return (uint16_t)DEFAULT_BROADCAST_OUTPUT_PORT; }
-
-bool NetworkConfig::persistNetworkConfig() {
-    bool ret = BspContainer::getStorage().storeSSID((const char*)(g_wifiConfig.sta.ssid));
-    ret &= BspContainer::getStorage().storePassword((const char*)(g_wifiConfig.sta.password));
-    ret &= BspContainer::getStorage().storeIsRouter(strlen((const char *)g_wifiConfig.ap.ssid) > 1);
-    // TODO: flag mesh usage and store it
-    return ret;
-}

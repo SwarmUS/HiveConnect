@@ -1,5 +1,5 @@
 #include "BSP.h"
-#include "NetworkContainer.h"
+#include "bsp/Container.h"
 #include "driver/spi_slave.h"
 #include "esp_event.h"
 #include "esp_system.h"
@@ -8,7 +8,6 @@
 #include "hal/spi_callbacks.h"
 #include "nvs_flash.h"
 #include <driver/gpio.h>
-#include "bsp/Container.h"
 
 BSP::BSP() { m_UUID = 0; }
 
@@ -19,10 +18,9 @@ void BSP::initChip() {
     ESP_ERROR_CHECK(nvs_flash_init());
     // Init spi slave
     initSPI();
-
-
-    // TODO: add cmake flag to force default
+#ifdef FORCE_DEFAULTS
     BspContainer::getStorage().clearStorage();
+#endif
 }
 
 ChipInfo BSP::getChipInfo() const {
