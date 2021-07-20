@@ -8,6 +8,7 @@
 #include "hal/spi_callbacks.h"
 #include "nvs_flash.h"
 #include <driver/gpio.h>
+#include "bsp/Container.h"
 
 BSP::BSP() { m_UUID = 0; }
 
@@ -18,6 +19,10 @@ void BSP::initChip() {
     ESP_ERROR_CHECK(nvs_flash_init());
     // Init spi slave
     initSPI();
+
+
+    // TODO: add cmake flag to force default
+    BspContainer::getStorage().clearStorage();
 }
 
 ChipInfo BSP::getChipInfo() const {

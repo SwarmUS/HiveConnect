@@ -92,3 +92,7 @@ bool Storage::getMeshEnabled() {
     }
     return gs_useMesh;
 }
+
+bool Storage::clearStorage() {
+    return nvs_erase_all(m_networkStorageHandle)  == ESP_OK;
+}

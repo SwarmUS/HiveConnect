@@ -19,6 +19,8 @@ class Storage : public IStorage {
     bool getIsRouter() override;
     bool getMeshEnabled() override;
 
+    bool clearStorage() override;
+
   private:
     ILogger& m_logger;
     nvs_handle_t m_networkStorageHandle;

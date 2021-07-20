@@ -16,6 +16,8 @@ class IStorage {
     virtual bool getPassword(char* password, size_t maxLength) = 0;
     virtual bool getIsRouter() = 0;
     virtual bool getMeshEnabled() = 0;
+
+    virtual bool clearStorage() = 0;
 };
 
 #endif // HIVE_CONNECT_ISTORAGE_H

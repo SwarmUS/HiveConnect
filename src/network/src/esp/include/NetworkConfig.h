@@ -47,6 +47,12 @@ uint16_t getBroadcastInputPort();
  * @return The port number
  */
 uint16_t getBroadcastOutputPort();
+
+/**
+ * @brief Persists the current network config
+ * @return true if successful
+ */
+bool persistNetworkConfig();
 } // namespace NetworkConfig
 
 #endif // HIVE_CONNECT_NETWORKCONFIG_H
