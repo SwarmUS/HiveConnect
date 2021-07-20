@@ -15,6 +15,11 @@ class HiveConnectHiveMindHandlerTests : public testing::Test {
     uint16_t agentList[3] = {2, 3, 4};
     uint8_t agentListLength = 3;
 
+    char ssid[NETWORK_SSID_MAX_LENGTH] = "test_ssid";
+    uint8_t ssidLength = sizeof(ssid);
+    char password[NETWORK_SSID_MAX_LENGTH] = "test_password";
+    uint8_t passwordLength = sizeof(password);
+
     void SetUp() override {
         m_logger = new LoggerInterfaceMock();
         m_networkManager = new NetworkManagerMock();
@@ -94,14 +99,41 @@ TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteR
 }
 
 TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleNetworkConfigGetRequest) {
+    // Given
     HiveConnectNetworkConfigGetRequestDTO getRequestDto;
     HiveConnectHiveMindApiDTO api(1, getRequestDto);
-    MessageDTO msg(1, 1, api);
+    MessageDTO msg(2, 1, api);
 
+    // Expect
+    EXPECT_CALL(*m_storage, getSSID(testing::_, testing::_)).Times(1).WillOnce(
+            testing::DoAll(testing::SetArrayArgument<0>(ssid,ssid + ssidLength),
+                            testing::Return(true))
+                );
+    EXPECT_CALL(*m_storage, getPassword(testing::_, testing::_)).Times(1).WillOnce(
+        testing::DoAll(testing::SetArrayArgument<0>(password,password + passwordLength),
+                       testing::Return(true))
+    );
+    EXPECT_CALL(*m_storage, getIsRouter()).WillOnce(testing::Return(true));
+    EXPECT_CALL(*m_storage, getMeshEnabled()).WillOnce(testing::Return(true));
+
+    // When
     auto ret = m_handler->handleMessage(msg.getSourceId(), msg.getDestinationId(), api);
 
+    // Then
     ASSERT_TRUE(ret.has_value());
-    ASSERT_EQ()
+
+    ASSERT_EQ(ret.value().getSourceId(), msg.getDestinationId());
+    ASSERT_EQ(ret.value().getDestinationId(), msg.getSourceId());
+    ASSERT_TRUE(std::holds_alternative<HiveConnectHiveMindApiDTO>(ret.value().getMessage()));
+    const auto* response = std::get_if<HiveConnectHiveMindApiDTO>(&ret.value().getMessage());
+
+    ASSERT_TRUE(std::holds_alternative<HiveConnectNetworkConfigGetResponseDTO>(response->getMessage()));
+    const auto* config = std::get_if<HiveConnectNetworkConfigGetResponseDTO>(&response->getMessage());
+
+    ASSERT_STREQ(config->getSSID(), ssid);
+    ASSERT_STREQ(config->getPassword(), password);
+    ASSERT_TRUE(config->isMeshEnabled());
+    ASSERT_TRUE(config->isMeshEnabled());
 }
 
 TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteResponse) {
@@ -128,5 +160,3 @@ TEST_F(HiveConnectHiveMindHandlerTests, HiveConnectHiveMindHandler_handleRemoteR
         EXPECT_EQ(msg->getAgents().at(i), agentList[i]);
     }
 }
-
-TEST

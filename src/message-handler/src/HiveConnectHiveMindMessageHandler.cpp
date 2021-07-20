@@ -33,8 +33,6 @@ std::optional<MessageDTO> HiveConnectHiveMindApiMessageHandler::handleMessage(
 
     if (const auto* request =
             std::get_if<HiveConnectNetworkConfigSetRequestDTO>(&message.getMessage())) {
-        char ssid[NETWORK_SSID_MAX_LENGTH];
-        char password[NETWORK_PASSWORD_MAX_LENGTH];
 
         bool ret = true;
         if (request->getSSID().has_value()) {
