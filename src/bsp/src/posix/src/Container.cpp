@@ -3,6 +3,7 @@
 #include "SpiStmMock.h"
 #include "UserInterface.h"
 #include "logger/LoggerContainer.h"
+#include "StorageMock.h"
 
 namespace BspContainer {
 
@@ -26,5 +27,11 @@ ISpiStm& getSpiStm() {
     static SpiStmMock s_spiStm(LoggerContainer::getLogger(), address.c_str(), port);
 
     return s_spiStm;
+}
+
+IStorage& getStorage() {
+    static StorageMock s_mock;
+
+    return s_mock;
 }
 } // namespace BspContainer
