@@ -17,6 +17,8 @@ class StorageMock : public IStorage {
     MOCK_METHOD(bool, getPassword, (char* password, size_t maxLength), (override));
     MOCK_METHOD(bool, getIsRouter, (), (override));
     MOCK_METHOD(bool, getMeshEnabled, (), (override));
+
+    MOCK_METHOD(bool, clearStorage, (), (override));
 };
 
 #endif // HIVE_CONNECT_STORAGEMOCK_H
