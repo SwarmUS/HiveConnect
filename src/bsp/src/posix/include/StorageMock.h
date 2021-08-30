@@ -8,44 +8,37 @@ class StorageMock : public IStorage {
     StorageMock() = default;
 
     bool storeSSID(const char* ssid) override {
-        (void) ssid;
+        (void)ssid;
         return false;
     }
     bool storePassword(const char* password) override {
-        (void) password;
+        (void)password;
         return false;
     }
 
     bool storeIsRouter(bool isRouter) override {
-        (void) isRouter;
+        (void)isRouter;
         return false;
     }
     bool storeMeshEnabled(bool meshEnabled) override {
-        (void) meshEnabled;
+        (void)meshEnabled;
         return false;
     }
 
     bool getSSID(char* ssid, size_t maxLength) override {
-        (void) ssid;
-        (void) maxLength;
+        (void)ssid;
+        (void)maxLength;
         return false;
     }
     bool getPassword(char* password, size_t maxLength) override {
-        (void) password;
-        (void) maxLength;
-        return false;
-     }
-    bool getIsRouter() override {
+        (void)password;
+        (void)maxLength;
         return false;
     }
-    bool getMeshEnabled() override {
-        return false;
-    }
+    bool getIsRouter() override { return false; }
+    bool getMeshEnabled() override { return false; }
 
-    bool clearStorage() override {
-        return false;
-    }
-
+    bool clearStorage() override { return false; }
 };
 
 #endif // HIVE_CONNECT_STORAGEMOCK_H

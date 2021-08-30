@@ -1,9 +1,9 @@
 #include "bsp/Container.h"
 #include "BSP.h"
 #include "SpiStmMock.h"
+#include "StorageMock.h"
 #include "UserInterface.h"
 #include "logger/LoggerContainer.h"
-#include "StorageMock.h"
 
 namespace BspContainer {
 
