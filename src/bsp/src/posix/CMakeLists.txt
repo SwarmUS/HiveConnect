@@ -14,6 +14,7 @@ set(LIB_PRIVATE_HEADERS
         include/System.h
         include/UserInterface.h
         include/SpiStmMock.h
+        include/StorageMock.h
 )
 
 add_library(${LIB_NAME} STATIC ${LIB_PRIVATE_HEADERS} ${LIB_SOURCES} )

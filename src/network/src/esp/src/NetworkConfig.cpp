@@ -1,43 +1,49 @@
 #include "NetworkConfig.h"
-
 #include "DefaultNetworkConfig.h"
+#include "bsp/Container.h"
 #include "esp_event.h"
 #include "esp_log.h"
 #include "esp_system.h"
 #include "esp_wifi.h"
+#include "nvs.h"
+#include "nvs_flash.h"
 #include <cstring>
 
+static wifi_config_t g_wifiConfig;
+
+bool NetworkConfig::initNetworkConfig() { return true; }
+
 wifi_mode_t NetworkConfig::getMode() {
-    if (gs_isRouter) {
+    if (BspContainer::getStorage().getIsRouter()) {
         return WIFI_MODE_AP;
     }
     return WIFI_MODE_STA;
 }
 
 wifi_config_t* NetworkConfig::getDefaultNetworkConfig() {
-    static wifi_config_t s_wifiConfig;
-    if (gs_isRouter) {
-        // +1 to have the \0 for the string
-        strlcpy((char*)(s_wifiConfig.ap.ssid), DEFAULT_SSID, strlen(DEFAULT_SSID) + 1);
-        strlcpy((char*)(s_wifiConfig.ap.password), DEFAULT_PASSWORD, strlen(DEFAULT_PASSWORD) + 1);
-        s_wifiConfig.ap.authmode = DEFAULT_AUTH_MODE;
-        s_wifiConfig.ap.max_connection = UINT8_MAX;
+
+    IStorage& storage = BspContainer::getStorage();
+
+    if (storage.getIsRouter()) {
+        storage.getSSID((char*)g_wifiConfig.ap.ssid, sizeof(g_wifiConfig.ap.ssid));
+        storage.getPassword((char*)g_wifiConfig.ap.password, sizeof(g_wifiConfig.ap.password));
+        g_wifiConfig.ap.authmode = DEFAULT_AUTH_MODE;
+        g_wifiConfig.ap.max_connection = UINT8_MAX;
     }
 
-    // +1 to have the \0 for the string
-    strlcpy((char*)(s_wifiConfig.sta.ssid), DEFAULT_SSID, strlen(DEFAULT_SSID) + 1);
-    strlcpy((char*)(s_wifiConfig.sta.password), DEFAULT_PASSWORD, strlen(DEFAULT_PASSWORD) + 1);
+    storage.getSSID((char*)g_wifiConfig.sta.ssid, sizeof(g_wifiConfig.ap.ssid));
+    storage.getPassword((char*)g_wifiConfig.sta.password, sizeof(g_wifiConfig.ap.password));
 
-    s_wifiConfig.sta.scan_method = WIFI_FAST_SCAN;
-    s_wifiConfig.sta.sort_method = WIFI_CONNECT_AP_BY_SIGNAL;
-    s_wifiConfig.sta.threshold.rssi = INT8_MIN;
-    s_wifiConfig.sta.threshold.authmode = DEFAULT_AUTH_MODE;
+    g_wifiConfig.sta.scan_method = WIFI_FAST_SCAN;
+    g_wifiConfig.sta.sort_method = WIFI_CONNECT_AP_BY_SIGNAL;
+    g_wifiConfig.sta.threshold.rssi = INT8_MIN;
+    g_wifiConfig.sta.threshold.authmode = DEFAULT_AUTH_MODE;
 
-    return &s_wifiConfig;
+    return &g_wifiConfig;
 }
 
 esp_interface_t NetworkConfig::getInterface() {
-    if (gs_isRouter) {
+    if (BspContainer::getStorage().getIsRouter()) {
         return ESP_IF_WIFI_AP;
     }
     return ESP_IF_WIFI_STA;

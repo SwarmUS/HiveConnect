@@ -4,9 +4,14 @@
 #include "esp_event.h"
 
 /**
- * @brief Namespace for functions to get differecont configuration element for the netowrk
+ * @brief Namespace for functions to get different configuration element for the netowrk
  */
 namespace NetworkConfig {
+/**
+ * @brief Initialize the storage used for the network configuration
+ * @return True if successful, false otherwise
+ */
+bool initNetworkConfig();
 /**
  * @brief Get the configured mode for the node (station, access-point, etc...)
  * @return The configured mode
@@ -14,7 +19,7 @@ namespace NetworkConfig {
 wifi_mode_t getMode();
 
 /**
- * @brief Get the network configuration (ssid, password, etc...)
+ * @brief Get the network default configuration (ssid, password, etc...)
  * @return
  */
 wifi_config_t* getDefaultNetworkConfig();

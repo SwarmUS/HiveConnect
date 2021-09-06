@@ -1,5 +1,5 @@
 #include "BSP.h"
-#include "NetworkContainer.h"
+#include "bsp/Container.h"
 #include "driver/spi_slave.h"
 #include "esp_event.h"
 #include "esp_system.h"
@@ -18,6 +18,9 @@ void BSP::initChip() {
     ESP_ERROR_CHECK(nvs_flash_init());
     // Init spi slave
     initSPI();
+#ifdef FORCE_DEFAULTS
+    BspContainer::getStorage().clearStorage();
+#endif
 }
 
 ChipInfo BSP::getChipInfo() const {

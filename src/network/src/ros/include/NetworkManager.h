@@ -16,6 +16,7 @@ class NetworkManager : public AbstractNetworkManager {
     ~NetworkManager() override = default;
 
     void start() override{};
+    void restart() override{};
 
     /**
      * @brief Gets the status of the network

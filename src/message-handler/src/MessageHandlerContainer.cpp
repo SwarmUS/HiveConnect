@@ -18,7 +18,8 @@ NetworkAPIHandler MessageHandlerContainer::createNetworkApiHandler() {
 HiveConnectHiveMindApiMessageHandler MessageHandlerContainer::
     createHiveConnectHiveMindMessageHandler() {
     return HiveConnectHiveMindApiMessageHandler(LoggerContainer::getLogger(),
-                                                NetworkContainer::getNetworkManager());
+                                                NetworkContainer::getNetworkManager(),
+                                                BspContainer::getStorage());
 }
 
 MessageDispatcher MessageHandlerContainer::createMessageDispatcher(

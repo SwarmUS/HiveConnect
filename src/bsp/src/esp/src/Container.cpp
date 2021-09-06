@@ -1,6 +1,7 @@
 #include "bsp/Container.h"
 #include "BSP.h"
 #include "SpiStm.h"
+#include "Storage.h"
 #include "UserInterface.h"
 #include "logger/LoggerContainer.h"
 
@@ -22,5 +23,11 @@ ISpiStm& getSpiStm() {
     static SpiStm s_spiStm(LoggerContainer::getLogger());
 
     return s_spiStm;
+}
+
+IStorage& getStorage() {
+    static Storage s_storage(LoggerContainer::getLogger());
+
+    return s_storage;
 }
 } // namespace BspContainer
