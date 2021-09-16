@@ -52,10 +52,17 @@ if(COMPILE_ESP)
     # Register the executable for idf, needs to be done after linking
     idf_build_executable(${EXECUTABLE_NAME})
     # Create target to flash via openocd with JTAG interface
-    add_custom_target(
-            hive_connect_flash
-            COMMAND openocd -f ${CMAKE_CURRENT_SOURCE_DIR}/tools/openocd/adafruit-esp.cfg -c "program_esp ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.bin 0x10000 verify exit"
-    )
+    if(HIVESIGHT)
+        add_custom_target(
+                hive_connect_flash
+                COMMAND openocd -f ${CMAKE_CURRENT_SOURCE_DIR}/tools/openocd/adafruit-esp.cfg -c "program_esp ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.bin 0x10000 verify exit"
+        )
+    elseif(HIVEBOARD)
+        add_custom_target(
+                hive_connect_flash
+                COMMAND openocd -f ${CMAKE_CURRENT_SOURCE_DIR}/tools/openocd/ft4232.cfg -c "program_esp ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.bin 0x10000 verify exit"
+        )
+    endif()
 else()
     #Target to launch local executable
     add_custom_target(
