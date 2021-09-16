@@ -23,13 +23,13 @@
 #define STM_CLK GPIO_NUM_18
 // Different CS for WROOM, SOC and HiveBoard
 #ifdef SPI_CONFIG_HIVEBOARD
-    #define STM_CS GPIO_NUM_5
+#define STM_CS GPIO_NUM_5
 #endif
 #ifdef SPI_CONFIG_WROOM
-    #define STM_CS GPIO_NUM_34
+#define STM_CS GPIO_NUM_34
 #endif
 #ifdef SPI_CONFIG_SOC
-    #define STM_CS GPIO_NUM_17
+#define STM_CS GPIO_NUM_17
 #endif
 
 // DMA_CHANNELS
@@ -37,19 +37,19 @@
 
 // User GPIOs
 #ifdef SPI_CONFIG_HIVEBOARD
-    #define STM_USER_0 GPIO_NUM_25
-    #define STM_USER_0_PIN_MASK GPIO_SEL_25
+#define STM_USER_0 GPIO_NUM_25
+#define STM_USER_0_PIN_MASK GPIO_SEL_25
 #else
-    #define STM_USER_0 GPIO_NUM_5
-    #define STM_USER_0_PIN_MASK GPIO_SEL_5
-    // Different user pins for WROOM and SOC
-    #ifdef SPI_CONFIG_WROOM
-        #define STM_USER_1 GPIO_NUM_35
-        #define STM_USER_1_PIN_MASK GPIO_SEL_35
-    #elif SPI_CONFIG_SOC
-        #define STM_USER_1 GPIO_NUM_27
-        #define STM_USER_1_PIN_MASK GPIO_SEL_27
-    #endif
+#define STM_USER_0 GPIO_NUM_5
+#define STM_USER_0_PIN_MASK GPIO_SEL_5
+// Different user pins for WROOM and SOC
+#ifdef SPI_CONFIG_WROOM
+#define STM_USER_1 GPIO_NUM_35
+#define STM_USER_1_PIN_MASK GPIO_SEL_35
+#elif SPI_CONFIG_SOC
+#define STM_USER_1 GPIO_NUM_27
+#define STM_USER_1_PIN_MASK GPIO_SEL_27
+#endif
 #endif
 
 // Output LED
