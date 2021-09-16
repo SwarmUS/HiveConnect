@@ -33,7 +33,7 @@
 #endif
 
 // DMA_CHANNELS
-#define DMA_CHANNEL_SPI 1 // No dma
+#define DMA_CHANNEL_SPI 1
 
 // User GPIOs
 #ifdef SPI_CONFIG_HIVEBOARD
