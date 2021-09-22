@@ -14,12 +14,14 @@ void NetworkBroadcast::handleReception(const hive_connect::Broadcast& msg) {
 NetworkBroadcast::NetworkBroadcast(ILogger& logger,
                                    IBSP& bsp,
                                    const char* publishingTopicPrefix,
-                                   const char* subscribingTopicPrefix) :
+                                   const char* subscribingTopicPrefix,
+                                   IUserInterface& ui) :
     m_logger(logger),
     m_bsp(bsp),
     m_pubTopicPrefix(publishingTopicPrefix),
     m_subTopicPrefix(subscribingTopicPrefix),
-    m_isStarted(false) {
+    m_isStarted(false),
+    m_ui(ui) {
 
     CircularBuff_init(&m_circularBuffer, m_data.data(), m_data.size());
 }
@@ -28,6 +30,7 @@ NetworkBroadcast::~NetworkBroadcast() { stop(); }
 
 bool NetworkBroadcast::start() {
     if (m_bsp.getHiveMindUUID() == 0) {
+        m_ui.setNetworkRGB(RGBColor::RED);
         m_logger.log(LogLevel::Error, "Trying to start broadcaster without valid uuid");
         return false;
     }

@@ -58,3 +58,27 @@ std::pair<std::string, int> UserInterface::generateBuffer(const char* format, va
     retVal.second = vsnprintf(retVal.first.data(), retVal.first.size() + 1, format, args);
     return retVal;
 }
+
+void UserInterface::setNetworkRGB(RGBColor color) {
+    ros::NodeHandle node("~");
+    switch (color) {
+    case RGBColor::RED:
+        node.setParam("NetworkStatus", "Error");
+        break;
+    case RGBColor::GREEN:
+        node.setParam("NetworkStatus", "Connected");
+        break;
+    case RGBColor::TEAL:
+        node.setParam("NetworkStatus", "Access point");
+        break;
+    case RGBColor::YELLOW:
+        node.setParam("NetworkStatus", "Connecting");
+        break;
+    case RGBColor::VIOLET:
+    case RGBColor::BLUE:
+    case RGBColor::WHITE:
+    case RGBColor::OFF:
+        node.setParam("NetworkStatus", "Unknown");
+        break;
+    }
+}

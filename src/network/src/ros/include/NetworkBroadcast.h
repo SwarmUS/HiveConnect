@@ -4,6 +4,7 @@
 #include "BaseTask.h"
 #include "INetworkBroadcast.h"
 #include "bsp/IBSP.h"
+#include "bsp/IUserInterface.h"
 #include "c-common/circular_buff.h"
 #include "hive_connect/Broadcast.h"
 #include "logger/ILogger.h"
@@ -19,7 +20,8 @@ class NetworkBroadcast : public INetworkBroadcast {
     NetworkBroadcast(ILogger& logger,
                      IBSP& bsp,
                      const char* publishingTopicPrefix,
-                     const char* subscribingTopicPrefix);
+                     const char* subscribingTopicPrefix,
+                     IUserInterface& ui);
     ~NetworkBroadcast() override;
 
     bool send(const uint8_t* data, uint16_t length) override;
@@ -44,6 +46,7 @@ class NetworkBroadcast : public INetworkBroadcast {
     std::condition_variable m_conditionVariable;
     std::mutex m_mutex;
     bool m_receivedBytes;
+    IUserInterface& m_ui;
 
     void handleReception(const hive_connect::Broadcast& msg);
 };
