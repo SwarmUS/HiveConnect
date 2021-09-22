@@ -1,6 +1,8 @@
 #include "UserInterface.h"
 #include <cstdio>
 
+UserInterface::UserInterface(IRGB& networkRGB) : m_networkRGB(networkRGB) {}
+
 int UserInterface::print(const char* format, va_list args) const {
     int ret = vprintf(format, args);
     printf("\n\r");
@@ -39,3 +41,5 @@ int UserInterface::printError(const char* format, va_list args) const {
     UserInterface::print("\r\n");
     return retValue;
 }
+
+void UserInterface::setNetworkRGB(RGBColor color) { m_networkRGB.setColor(color); }

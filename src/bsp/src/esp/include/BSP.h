@@ -2,6 +2,7 @@
 #define BSP_H
 
 #include "bsp/IBSP.h"
+#include "bsp/IRGB.h"
 #include <array>
 
 class BSP : public IBSP {
@@ -16,6 +17,7 @@ class BSP : public IBSP {
 
   private:
     void initSPI();
+    void initRGB();
     uint16_t m_UUID;
 };
 

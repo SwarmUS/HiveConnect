@@ -4,6 +4,7 @@
 #include "../../common/include/AbstractNetworkManager.h"
 #include "TCPClient.h"
 #include "TCPServer.h"
+#include "bsp/IUserInterface.h"
 #include "esp_wifi.h"
 #include "logger/ILogger.h"
 #include <BaseTask.h>
@@ -16,7 +17,8 @@ class NetworkManager : public AbstractNetworkManager {
   public:
     NetworkManager(ILogger& logger,
                    INetworkInputStream& server,
-                   IHashMap<uint16_t, uint32_t>& hashMap);
+                   IHashMap<uint16_t, uint32_t>& hashMap,
+                   IUserInterface& ui);
     ~NetworkManager() = default;
 
     void start() override;
@@ -31,6 +33,7 @@ class NetworkManager : public AbstractNetworkManager {
 
   private:
     INetworkInputStream& m_server;
+    IUserInterface& m_ui;
     BaseTask<configMINIMAL_STACK_SIZE * 4> m_networkExecuteTask;
     esp_ip4_addr_t m_ipAddress;
     esp_netif_obj* m_networkInterfaceHandle;

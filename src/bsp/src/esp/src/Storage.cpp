@@ -40,6 +40,7 @@ bool Storage::getSSID(char* ssid, size_t maxLength) {
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         m_logger.log(LogLevel::Info, "SSID not found in storage, getting default");
         strlcpy(ssid, DEFAULT_SSID, strlen(DEFAULT_SSID) + 1); // +1 for \0
+        storeSSID(DEFAULT_SSID);
         return true;
     }
     return false;
@@ -57,6 +58,7 @@ bool Storage::getPassword(char* password, size_t maxLength) {
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         m_logger.log(LogLevel::Info, "Password not found in storage, getting default");
         strlcpy(password, DEFAULT_PASSWORD, strlen(DEFAULT_PASSWORD) + 1); // +1 for \0
+        storePassword(DEFAULT_PASSWORD);
         return true;
     }
     return false;
@@ -71,6 +73,7 @@ bool Storage::getIsRouter() {
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         m_logger.log(LogLevel::Info, "IsRouter not found in storage, using default of %d",
                      gs_isRouter);
+        storeIsRouter(gs_isRouter);
         return gs_isRouter;
     } else {
         m_logger.log(LogLevel::Warn, "Error occurred while trying to get router flag");
@@ -86,6 +89,7 @@ bool Storage::getMeshEnabled() {
     }
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         m_logger.log(LogLevel::Info, "IsRouter not found in storage");
+        storeMeshEnabled(gs_useMesh);
         return gs_useMesh;
     } else {
         m_logger.log(LogLevel::Warn, "Error occurred while trying to get router flag");
