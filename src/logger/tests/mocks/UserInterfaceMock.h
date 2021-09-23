@@ -55,6 +55,8 @@ class UserInterfaceMock final : public IUserInterface {
         m_printCallCounter++;
         return 0;
     }
+
+    void setNetworkRGB(RGBColor color) override {}
 };
 
 #ifdef __cplusplus
