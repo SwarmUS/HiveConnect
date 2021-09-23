@@ -9,6 +9,7 @@ set(TEST_HEADERS
     mocks/LoggerInterfaceMock.h
     mocks/BroadcastMock.h
     mocks/BSPMock.h
+    mocks/UserInterfaceMock.h
     )
 
 add_executable(${TEST_NAME} ${TEST_SOURCES} ${TEST_HEADERS})
