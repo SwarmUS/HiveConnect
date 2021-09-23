@@ -51,6 +51,7 @@ std::optional<MessageDTO> HiveConnectHiveMindApiMessageHandler::handleMessage(
         GenericResponseDTO responseDto(ret ? GenericResponseStatusDTO::Ok
                                            : GenericResponseStatusDTO::Error,
                                        ret ? "" : "Error setting network config");
+        m_networkManager.restart();
         return MessageDTO(
             destId, sourceId,
             HiveConnectHiveMindApiDTO(message.getMessageId(),
