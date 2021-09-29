@@ -98,7 +98,7 @@ class UnicastMessageSenderTask : public AbstractTask<10 * configMINIMAL_STACK_SI
     INetworkManager& m_networkManager;
     void task() override {
         auto& stream = NetworkContainer::getNetworkOutputStream();
-        NetworkSerializer serializer(stream, m_networkManager);
+        NetworkSerializer serializer(stream, m_networkManager, LoggerContainer::getLogger());
         MessageSender messageSender(MessageHandlerContainer::getUnicastOutputQueue(), serializer,
                                     BspContainer::getBSP(), m_logger);
 
@@ -248,6 +248,44 @@ class BroadcastIPTask : public AbstractTask<10 * configMINIMAL_STACK_SIZE> {
     }
 };
 
+// TO REMOVE
+class UnicastCommunicationTester : public AbstractTask<10 * configMINIMAL_STACK_SIZE> {
+  public:
+    UnicastCommunicationTester(const char* taskName,
+                    UBaseType_t priority,
+                    IBSP& bsp,
+                    INetworkManager& networkManager,
+                    ILogger& logger) :
+        AbstractTask(taskName, priority),
+        m_bsp(bsp),
+        m_networkManager(networkManager),
+        m_logger(logger) {}
+    ~UnicastCommunicationTester() override = default;
+
+  private:
+    IBSP& m_bsp;
+    INetworkManager& m_networkManager;
+    ILogger& m_logger;
+    [[noreturn]] void task() override {
+        if (m_bsp.getHiveMindUUID() == 1) {
+            GenericResponseDTO genericResponseDto(GenericResponseStatusDTO::Ok,"");
+            ResponseDTO responseDto(42, genericResponseDto);
+            MessageDTO message(1,2,responseDto);
+            while (true) {
+                // Wait for device to be connected and having a valid id
+                while (NetworkContainer::getNetworkManager().getNetworkStatus() !=
+                           NetworkStatus::Connected ||
+                       BspContainer::getBSP().getHiveMindUUID() == 0) {
+                    Task::delay(100);
+                }
+                MessageHandlerContainer::getUnicastOutputQueue().push(message);
+                Task::delay(5000);
+            }
+        }
+    }
+
+};
+
 void app_main(void) {
     IBSP* bsp = &BspContainer::getBSP();
     bsp->initChip();
@@ -264,8 +302,11 @@ void app_main(void) {
                                                                tskIDLE_PRIORITY + 1);
     static BroadcastMessageDispatcher s_broadcastReceiver("broadcast_send", tskIDLE_PRIORITY + 1);
     static BroadcastIPTask s_broadcastIpTask(
-        "broad_casting_ip", configMINIMAL_STACK_SIZE, BspContainer::getBSP(),
+        "broad_casting_ip", tskIDLE_PRIORITY + 1, BspContainer::getBSP(),
         NetworkContainer::getNetworkManager(), LoggerContainer::getLogger());
+
+    static UnicastCommunicationTester s_uniTest("unicast_test", tskIDLE_PRIORITY +1, BspContainer::getBSP(),
+                                                NetworkContainer::getNetworkManager(), LoggerContainer::getLogger());
 
     s_spiMessageSend.start();
     s_spiDispatch.start();
@@ -276,6 +317,8 @@ void app_main(void) {
     s_broadcastMessageSender.start();
     s_broadcastReceiver.start();
     s_broadcastIpTask.start();
+    // TO REMOVE
+    s_uniTest.start();
 }
 
 #ifdef __cplusplus

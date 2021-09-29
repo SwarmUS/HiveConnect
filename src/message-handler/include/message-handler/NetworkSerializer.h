@@ -5,10 +5,11 @@
 #include "INetworkOutputStream.h"
 #include "pheromones/HiveMindHostSerializer.h"
 #include "pheromones/IProtobufOutputStream.h"
+#include "logger/ILogger.h"
 
 class NetworkSerializer : public IHiveMindHostSerializer {
   public:
-    NetworkSerializer(INetworkOutputStream& stream, INetworkManager& networkManager);
+    NetworkSerializer(INetworkOutputStream& stream, INetworkManager& networkManager, ILogger& logger);
     virtual ~NetworkSerializer() = default;
 
     bool serializeToStream(const MessageDTO& message) override;
@@ -17,6 +18,7 @@ class NetworkSerializer : public IHiveMindHostSerializer {
     INetworkOutputStream& m_outputStream;
     INetworkManager& m_networkManager;
     HiveMindHostSerializer m_hivemindHostSerializer;
+    ILogger& m_logger;
 };
 
 #endif // HIVE_CONNECT_NETWORKSERIALIZER_H

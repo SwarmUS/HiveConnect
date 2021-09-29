@@ -46,7 +46,7 @@ bool TCPServer::receive(uint8_t* data, uint16_t length) {
         return false;
     }
 
-    while (receivedBytes <= length) {
+    while (receivedBytes < length) {
         ssize_t nbytes =
             lwip_recv(m_clientSocket, data + receivedBytes, (length - receivedBytes), 0);
 
