@@ -24,10 +24,6 @@ MessageDispatcher::MessageDispatcher(
 bool MessageDispatcher::deserializeAndDispatch() {
     MessageDTO message;
     if (m_deserializer.deserializeFromStream(message)) {
-        // TO REMOVE
-        if (const auto* testResponse = std::get_if<ResponseDTO>(&message.getMessage())) {
-            m_logger.log(LogLevel::Info, "Received response!");
-        }
         // Handle greet
         if (const auto* greeting = std::get_if<GreetingDTO>(&message.getMessage())) {
             m_logger.log(LogLevel::Info, "Received greeting, ID obtained is %d", greeting->getId());

@@ -20,13 +20,6 @@ bool NetworkSerializer::serializeToStream(const MessageDTO& message) {
     }
 
     bool ret = m_hivemindHostSerializer.serializeToStream(message);
-    // TO REMOVE
-    if (ret) {
-        m_logger.log(LogLevel::Info, "Successfully sent message");
-    } else
-    {
-        m_logger.log(LogLevel::Info, "Failed to send message");
-    }
     m_outputStream.close();
     return ret;
 }
