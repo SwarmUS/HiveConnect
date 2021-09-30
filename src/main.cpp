@@ -248,43 +248,6 @@ class BroadcastIPTask : public AbstractTask<10 * configMINIMAL_STACK_SIZE> {
     }
 };
 
-// TO REMOVE
-class UnicastCommunicationTester : public AbstractTask<10 * configMINIMAL_STACK_SIZE> {
-  public:
-    UnicastCommunicationTester(const char* taskName,
-                    UBaseType_t priority,
-                    IBSP& bsp,
-                    INetworkManager& networkManager,
-                    ILogger& logger) :
-        AbstractTask(taskName, priority),
-        m_bsp(bsp),
-        m_networkManager(networkManager),
-        m_logger(logger) {}
-    ~UnicastCommunicationTester() override = default;
-
-  private:
-    IBSP& m_bsp;
-    INetworkManager& m_networkManager;
-    ILogger& m_logger;
-    [[noreturn]] void task() override {
-        if (m_bsp.getHiveMindUUID() == 1) {
-            GenericResponseDTO genericResponseDto(GenericResponseStatusDTO::Ok,"");
-            ResponseDTO responseDto(42, genericResponseDto);
-            MessageDTO message(1,2,responseDto);
-            while (true) {
-                // Wait for device to be connected and having a valid id
-                while (NetworkContainer::getNetworkManager().getNetworkStatus() !=
-                           NetworkStatus::Connected ||
-                       BspContainer::getBSP().getHiveMindUUID() == 0) {
-                    Task::delay(100);
-                }
-                MessageHandlerContainer::getUnicastOutputQueue().push(message);
-                Task::delay(5000);
-            }
-        }
-    }
-
-};
 
 void app_main(void) {
     IBSP* bsp = &BspContainer::getBSP();
@@ -292,21 +255,18 @@ void app_main(void) {
     INetworkManager* networkManager = &NetworkContainer::getNetworkManager();
     networkManager->start();
 
-    static HiveMindMessageSender s_spiMessageSend("hivemind_send", tskIDLE_PRIORITY + 1);
-    static HiveMindDispatcher s_spiDispatch("hivemind_receive", tskIDLE_PRIORITY + 1);
+    static HiveMindMessageSender s_spiMessageSend("hivemind_send", tskIDLE_PRIORITY + 10);
+    static HiveMindDispatcher s_spiDispatch("hivemind_receive", tskIDLE_PRIORITY + 10);
 
-    static UnicastMessageSenderTask s_tcpMessageSender("unicast_send", tskIDLE_PRIORITY + 1);
-    static UnicastMessageDispatcher s_tcpMessageReceiver("unicast_receive", tskIDLE_PRIORITY + 1);
+    static UnicastMessageSenderTask s_tcpMessageSender("unicast_send", tskIDLE_PRIORITY + 30);
+    static UnicastMessageDispatcher s_tcpMessageReceiver("unicast_receive", tskIDLE_PRIORITY + 30);
 
     static BroadcastMessageSenderTask s_broadcastMessageSender("broadcast_send",
-                                                               tskIDLE_PRIORITY + 1);
-    static BroadcastMessageDispatcher s_broadcastReceiver("broadcast_send", tskIDLE_PRIORITY + 1);
+                                                               tskIDLE_PRIORITY + 10);
+    static BroadcastMessageDispatcher s_broadcastReceiver("broadcast_send", tskIDLE_PRIORITY + 10);
     static BroadcastIPTask s_broadcastIpTask(
-        "broad_casting_ip", tskIDLE_PRIORITY + 1, BspContainer::getBSP(),
+        "broad_casting_ip", tskIDLE_PRIORITY + 10, BspContainer::getBSP(),
         NetworkContainer::getNetworkManager(), LoggerContainer::getLogger());
-
-    static UnicastCommunicationTester s_uniTest("unicast_test", tskIDLE_PRIORITY +1, BspContainer::getBSP(),
-                                                NetworkContainer::getNetworkManager(), LoggerContainer::getLogger());
 
     s_spiMessageSend.start();
     s_spiDispatch.start();
@@ -317,8 +277,6 @@ void app_main(void) {
     s_broadcastMessageSender.start();
     s_broadcastReceiver.start();
     s_broadcastIpTask.start();
-    // TO REMOVE
-    s_uniTest.start();
 }
 
 #ifdef __cplusplus
