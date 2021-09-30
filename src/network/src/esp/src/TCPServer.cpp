@@ -41,7 +41,7 @@ bool TCPServer::receive(uint8_t* data, uint16_t length) {
 
     if (receivedBytes < 0) {
         m_logger.log(LogLevel::Error, "Failed to read data from fresh connection");
-        lwip_close(m_clientSocket);
+        closesocket(m_clientSocket);
         m_clientSocket = NO_SOCKET;
         return false;
     }
@@ -55,7 +55,7 @@ bool TCPServer::receive(uint8_t* data, uint16_t length) {
             // transmitting, lwip_rcv will return 0. When the client disconnects, lwip_rcv will
             // return -1.
             m_logger.log(LogLevel::Info, "Client terminated connection");
-            lwip_close(m_clientSocket);
+            closesocket(m_clientSocket);
             m_clientSocket = NO_SOCKET;
             break;
         }
@@ -69,7 +69,7 @@ bool TCPServer::isReady() { return m_acceptingSocket != NO_SOCKET; }
 
 void TCPServer::closeCurrentClient() {
     if (m_clientSocket > 0) {
-        lwip_close(m_clientSocket);
+        closesocket(m_clientSocket);
     }
     m_clientSocket = -1;
 }
