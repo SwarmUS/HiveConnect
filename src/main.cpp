@@ -248,7 +248,6 @@ class BroadcastIPTask : public AbstractTask<10 * configMINIMAL_STACK_SIZE> {
     }
 };
 
-
 void app_main(void) {
     IBSP* bsp = &BspContainer::getBSP();
     bsp->initChip();

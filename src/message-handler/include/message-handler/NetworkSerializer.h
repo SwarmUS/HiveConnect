@@ -3,13 +3,15 @@
 
 #include "INetworkManager.h"
 #include "INetworkOutputStream.h"
+#include "logger/ILogger.h"
 #include "pheromones/HiveMindHostSerializer.h"
 #include "pheromones/IProtobufOutputStream.h"
-#include "logger/ILogger.h"
 
 class NetworkSerializer : public IHiveMindHostSerializer {
   public:
-    NetworkSerializer(INetworkOutputStream& stream, INetworkManager& networkManager, ILogger& logger);
+    NetworkSerializer(INetworkOutputStream& stream,
+                      INetworkManager& networkManager,
+                      ILogger& logger);
     virtual ~NetworkSerializer() = default;
 
     bool serializeToStream(const MessageDTO& message) override;
