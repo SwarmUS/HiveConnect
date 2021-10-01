@@ -46,7 +46,7 @@ bool TCPServer::receive(uint8_t* data, uint16_t length) {
         return false;
     }
 
-    while (receivedBytes <= length) {
+    while (receivedBytes < length) {
         ssize_t nbytes =
             lwip_recv(m_clientSocket, data + receivedBytes, (length - receivedBytes), 0);
 
@@ -68,8 +68,8 @@ bool TCPServer::receive(uint8_t* data, uint16_t length) {
 bool TCPServer::isReady() { return m_acceptingSocket != NO_SOCKET; }
 
 void TCPServer::closeCurrentClient() {
-    if (m_clientSocket < 0) {
-        close(m_clientSocket);
+    if (m_clientSocket > 0) {
+        closesocket(m_clientSocket);
     }
     m_clientSocket = -1;
 }

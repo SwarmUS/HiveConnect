@@ -98,7 +98,7 @@ class UnicastMessageSenderTask : public AbstractTask<10 * configMINIMAL_STACK_SI
     INetworkManager& m_networkManager;
     void task() override {
         auto& stream = NetworkContainer::getNetworkOutputStream();
-        NetworkSerializer serializer(stream, m_networkManager);
+        NetworkSerializer serializer(stream, m_networkManager, LoggerContainer::getLogger());
         MessageSender messageSender(MessageHandlerContainer::getUnicastOutputQueue(), serializer,
                                     BspContainer::getBSP(), m_logger);
 
@@ -254,17 +254,17 @@ void app_main(void) {
     INetworkManager* networkManager = &NetworkContainer::getNetworkManager();
     networkManager->start();
 
-    static HiveMindMessageSender s_spiMessageSend("hivemind_send", tskIDLE_PRIORITY + 1);
-    static HiveMindDispatcher s_spiDispatch("hivemind_receive", tskIDLE_PRIORITY + 1);
+    static HiveMindMessageSender s_spiMessageSend("hivemind_send", tskIDLE_PRIORITY + 10);
+    static HiveMindDispatcher s_spiDispatch("hivemind_receive", tskIDLE_PRIORITY + 10);
 
-    static UnicastMessageSenderTask s_tcpMessageSender("unicast_send", tskIDLE_PRIORITY + 1);
-    static UnicastMessageDispatcher s_tcpMessageReceiver("unicast_receive", tskIDLE_PRIORITY + 1);
+    static UnicastMessageSenderTask s_tcpMessageSender("unicast_send", tskIDLE_PRIORITY + 30);
+    static UnicastMessageDispatcher s_tcpMessageReceiver("unicast_receive", tskIDLE_PRIORITY + 30);
 
     static BroadcastMessageSenderTask s_broadcastMessageSender("broadcast_send",
-                                                               tskIDLE_PRIORITY + 1);
-    static BroadcastMessageDispatcher s_broadcastReceiver("broadcast_send", tskIDLE_PRIORITY + 1);
+                                                               tskIDLE_PRIORITY + 10);
+    static BroadcastMessageDispatcher s_broadcastReceiver("broadcast_send", tskIDLE_PRIORITY + 10);
     static BroadcastIPTask s_broadcastIpTask(
-        "broad_casting_ip", configMINIMAL_STACK_SIZE, BspContainer::getBSP(),
+        "broad_casting_ip", tskIDLE_PRIORITY + 10, BspContainer::getBSP(),
         NetworkContainer::getNetworkManager(), LoggerContainer::getLogger());
 
     s_spiMessageSend.start();

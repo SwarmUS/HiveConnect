@@ -20,7 +20,7 @@ class NetworkSerializerAndDeserializerIntegrationTestsFixture : public testing::
         m_inputStream = new NetworkInputStream(m_logger, 9000);
         m_outputStream = new NetworkOutputStream(m_logger);
 
-        m_serializer = new NetworkSerializer(*m_outputStream, m_networkManager);
+        m_serializer = new NetworkSerializer(*m_outputStream, m_networkManager, m_logger);
         m_deserializer = new NetworkDeserializer(*m_inputStream);
     }
 
