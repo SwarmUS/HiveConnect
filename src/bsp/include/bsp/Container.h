@@ -28,6 +28,11 @@ ISpiStm& getSpiStm();
  * @brief Returns the storage instance
  */
 IStorage& getStorage();
+
+/**
+ * @brief
+ */
+IRGB& getNetworkRGB();
 } // namespace BspContainer
 
 #endif // FACTORY_H

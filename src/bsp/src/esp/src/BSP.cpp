@@ -69,6 +69,33 @@ void BSP::initSPI() {
     gpio_set_pull_mode(STM_CS, GPIO_PULLUP_ONLY);
 }
 
+void BSP::initRGB() {
+    gpio_config_t gpioConfig = {.pin_bit_mask = RGB_R_PIN_MASK,
+                                .mode = GPIO_MODE_OUTPUT,
+                                .pull_up_en = GPIO_PULLUP_DISABLE,
+                                .pull_down_en = GPIO_PULLDOWN_DISABLE,
+                                .intr_type = GPIO_INTR_DISABLE};
+    assert(gpio_config(&gpioConfig) == ESP_OK);
+
+    gpioConfig = {.pin_bit_mask = RGB_G_PIN_MASK,
+                  .mode = GPIO_MODE_OUTPUT,
+                  .pull_up_en = GPIO_PULLUP_DISABLE,
+                  .pull_down_en = GPIO_PULLDOWN_DISABLE,
+                  .intr_type = GPIO_INTR_DISABLE};
+    assert(gpio_config(&gpioConfig) == ESP_OK);
+
+    gpioConfig = {.pin_bit_mask = RGB_B_PIN_MASK,
+                  .mode = GPIO_MODE_OUTPUT,
+                  .pull_up_en = GPIO_PULLUP_DISABLE,
+                  .pull_down_en = GPIO_PULLDOWN_DISABLE,
+                  .intr_type = GPIO_INTR_DISABLE};
+    assert(gpio_config(&gpioConfig) == ESP_OK);
+
+    gpio_set_level(RGB_R, 0);
+    gpio_set_level(RGB_G, 1);
+    gpio_set_level(RGB_B, 1);
+}
+
 uint16_t BSP::getHiveMindUUID() const { return m_UUID; }
 
 void BSP::setHiveMindUUID(uint16_t uuid) { m_UUID = uuid; }

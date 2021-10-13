@@ -3,6 +3,7 @@
 #include "mocks/BSPMock.h"
 #include "mocks/BroadcastMock.h"
 #include "mocks/LoggerInterfaceMock.h"
+#include "mocks/UserInterfaceMock.h"
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
@@ -10,7 +11,8 @@ class NetworkManagerFixture : public testing::Test {
   public:
     void SetUp() override {
         m_hashMap = new HashMapStack<uint16_t, uint32_t, 10>();
-        m_networkManager = new NetworkManager(m_logger, *m_hashMap, m_bsp, m_broadcast);
+        m_ui = new UserInterfaceMock(m_printCounter);
+        m_networkManager = new NetworkManager(m_logger, *m_hashMap, m_bsp, m_broadcast, *m_ui);
     }
     void TearDown() override {
         delete m_networkManager;
@@ -23,6 +25,8 @@ class NetworkManagerFixture : public testing::Test {
     BSPMock m_bsp;
     BroadcastMock m_broadcast;
     NetworkManager* m_networkManager;
+    int m_printCounter;
+    UserInterfaceMock* m_ui;
 };
 
 TEST_F(NetworkManagerFixture, register_and_get_ip_success) {

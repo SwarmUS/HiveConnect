@@ -1,6 +1,7 @@
 #ifndef IBSP_H
 #define IBSP_H
 
+#include "IRGB.h"
 #include <cstdint>
 
 /**

@@ -11,7 +11,8 @@ set(LIB_HEADERS
         include/bsp/Container.h
         include/bsp/IUserInterface.h
         include/bsp/ISpiStm.h
-        include/bsp/IStorage.h)
+        include/bsp/IStorage.h
+        include/bsp/IRGB.h)
 
 add_library(${LIB_NAME} STATIC ${LIB_HEADERS})
 add_library(${LIB_ALIAS} ALIAS ${LIB_NAME})

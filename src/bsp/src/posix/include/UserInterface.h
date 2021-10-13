@@ -24,6 +24,8 @@ class UserInterface : public IUserInterface {
 
     int printError(const char* format, va_list args) const override;
 
+    void setNetworkRGB(RGBColor color) override;
+
   private:
     static std::pair<std::string, int> generateBuffer(const char* format, va_list args);
     const IBSP& m_bsp;

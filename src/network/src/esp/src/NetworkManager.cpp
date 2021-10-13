@@ -16,11 +16,13 @@ static void networkExecuteTask(void* context) {
 
 NetworkManager::NetworkManager(ILogger& logger,
                                INetworkInputStream& server,
-                               IHashMap<uint16_t, uint32_t>& hashMap) :
+                               IHashMap<uint16_t, uint32_t>& hashMap,
+                               IUserInterface& ui) :
     AbstractNetworkManager(logger, hashMap),
 
     m_networkExecuteTask("network_manager", tskIDLE_PRIORITY + 1, networkExecuteTask, this),
-    m_server(server) {
+    m_server(server),
+    m_ui(ui) {
 
     // Initialise to 0.0.0.0
     m_ipAddress.addr = 0;
@@ -118,6 +120,10 @@ NetworkStatus NetworkManager::getNetworkStatus() const {
 uint32_t NetworkManager::getSelfIP() const { return ntohl(m_ipAddress.addr); }
 
 void NetworkManager::execute() {
+    RGBColor connectedColor = RGBColor::GREEN;
+    if (NetworkConfig::getMode() == WIFI_MODE_AP) {
+        connectedColor = RGBColor::TEAL;
+    }
     switch (m_state) {
 
     case NetworkManagerState::INIT:
@@ -128,6 +134,7 @@ void NetworkManager::execute() {
                                             NetworkConfig::getDefaultNetworkConfig()));
         ESP_ERROR_CHECK(esp_wifi_start());
         m_state = NetworkManagerState::LOOKING_FOR_NETWORK;
+        m_ui.setNetworkRGB(RGBColor::YELLOW);
         break;
     case NetworkManagerState::LOOKING_FOR_NETWORK:
         // Idle state
@@ -136,21 +143,22 @@ void NetworkManager::execute() {
         m_logger.log(LogLevel::Info, "Connected to network!");
 
         if (!m_server.start()) {
-            m_logger.log(LogLevel::Info, "Failed to start TCP server socket");
+            m_logger.log(LogLevel::Error, "Failed to start TCP server socket");
         } else if (!NetworkContainer::getNetworkBroadcast().start()) {
-            m_logger.log(LogLevel::Info, "Failed to start UDP socket");
+            m_logger.log(LogLevel::Error, "Failed to start UDP socket");
         } else {
-            m_logger.log(LogLevel::Error, "TCP and UDP socket started!");
+            m_logger.log(LogLevel::Info, "TCP and UDP socket started!");
         }
         m_state = NetworkManagerState::RUNNING;
         break;
     case NetworkManagerState::RUNNING:
         // Idle state.
+        m_ui.setNetworkRGB(connectedColor);
         break;
     case NetworkManagerState::DISCONNECTED:
         m_logger.log(LogLevel::Error, "Handling the network error");
         m_server.stop();
-
+        m_ui.setNetworkRGB(RGBColor::RED);
         restart();
         break;
     default:

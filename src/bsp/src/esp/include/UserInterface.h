@@ -5,7 +5,7 @@
 
 class UserInterface : public IUserInterface {
   public:
-    UserInterface() = default;
+    UserInterface(IRGB& networkRGB);
     ~UserInterface() override = default;
 
     int print(const char* format, ...) const override;
@@ -19,6 +19,11 @@ class UserInterface : public IUserInterface {
     int printWarning(const char* format, va_list args) const override;
 
     int printError(const char* format, va_list args) const override;
+
+    void setNetworkRGB(RGBColor color) override;
+
+  private:
+    IRGB& m_networkRGB;
 };
 
 #endif // HIVE_CONNECT_USERINTERFACE_H

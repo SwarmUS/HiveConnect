@@ -55,4 +55,12 @@
 // Output LED
 #define USER_LED GPIO_NUM_16
 
+// RGB LED (not connected on HiveSight)
+#define RGB_R GPIO_NUM_27
+#define RGB_R_PIN_MASK GPIO_SEL_27
+#define RGB_G GPIO_NUM_26
+#define RGB_G_PIN_MASK GPIO_SEL_26
+#define RGB_B GPIO_NUM_4
+#define RGB_B_PIN_MASK GPIO_SEL_4
+
 #endif // __PIN_MAP_H__

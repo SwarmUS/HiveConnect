@@ -13,9 +13,8 @@ static constexpr uint16_t gs_MAX_AGENT_IN_MAP = 64;
 INetworkManager& NetworkContainer::getNetworkManager() {
     static HashMapStack<uint16_t, uint32_t, gs_MAX_AGENT_IN_MAP> s_hashMap;
     static NetworkManager s_networkManager(LoggerContainer::getLogger(), s_hashMap,
-                                           BspContainer::getBSP(), getNetworkBroadcast());
-    // To remove:
-    s_networkManager.getIPFromAgentID(2);
+                                           BspContainer::getBSP(), getNetworkBroadcast(),
+                                           BspContainer::getUserInterface());
     return s_networkManager;
 }
 
@@ -45,6 +44,7 @@ INetworkBroadcast& NetworkContainer::getNetworkBroadcast() {
     std::string outputPrefix(BROADCAST_OUTPUT_TOPIC);
     std::string inputPrefix(BROADCAST_INPUT_TOPIC);
     static NetworkBroadcast s_broadcast(LoggerContainer::getLogger(), BspContainer::getBSP(),
-                                        outputPrefix.c_str(), inputPrefix.c_str());
+                                        outputPrefix.c_str(), inputPrefix.c_str(),
+                                        BspContainer::getUserInterface());
     return s_broadcast;
 }

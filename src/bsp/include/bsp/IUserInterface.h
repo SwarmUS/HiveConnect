@@ -1,6 +1,7 @@
 #ifndef __IUSERINTERFACE_H_
 #define __IUSERINTERFACE_H_
 
+#include "IRGB.h"
 #include <cstdarg>
 
 /**
@@ -85,6 +86,11 @@ class IUserInterface {
      *negative number on error
      */
     virtual int printError(const char* format, va_list args) const = 0;
+
+    /**
+     * @brief Set the UI to display the networkState
+     */
+    virtual void setNetworkRGB(RGBColor color) = 0;
 };
 
 #endif // __IUSERINTERFACE_H_
