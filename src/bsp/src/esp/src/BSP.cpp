@@ -18,6 +18,7 @@ void BSP::initChip() {
     ESP_ERROR_CHECK(nvs_flash_init());
     // Init spi slave
     initSPI();
+    initRGB();
 #ifdef FORCE_DEFAULTS
     BspContainer::getStorage().clearStorage();
 #endif
