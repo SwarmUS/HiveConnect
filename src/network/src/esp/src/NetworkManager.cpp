@@ -87,7 +87,7 @@ void NetworkManager::eventHandler(void* context,
     }
 }
 
-void NetworkManager::start() { m_networkExecuteTask.start();}
+void NetworkManager::start() { m_networkExecuteTask.start(); }
 
 void NetworkManager::restart() {
     esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &eventHandler);
