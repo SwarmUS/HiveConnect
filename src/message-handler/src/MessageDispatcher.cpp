@@ -74,9 +74,10 @@ bool MessageDispatcher::dispatchHiveConnectHiveMindAPI(const MessageDTO& message
     } else {
         auto response = m_HiveConnectHiveMindMessageHandler.handleMessage(
             message.getSourceId(), message.getDestinationId(), apiCall);
-        if (response) {
+        if (response.has_value()) {
             return forwardMessage(response.value());
         }
+        return true;
     }
     m_logger.log(LogLevel::Error, "Failed dispatch HiveConnectHiveMind message");
     return false;

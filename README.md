@@ -16,7 +16,7 @@ Project for the esp32 module and ros simulation node for SwarmUs.
 This project requires the esp-idf repo cloned and sourced to be able to compile. 
 It wil then need to be installed to set the the Extensa toolchain and other stuff. Simply run:
 ````
-git clone -b v4.1 --recurse-submodules https://github.com/espressif/esp-idf
+git clone -b v4.2 --recurse-submodules https://github.com/espressif/esp-idf
 esp-idf/install.xx (extension varies from platform to platform, use sh for linux and bat for windows)
 git clone https://github.com/SwarmUS/HiveConnect
 ````
@@ -72,89 +72,7 @@ To debug using CLion, you can create a run configuration using the Embedded Gdb 
 6. For the GDB server, choose the one provided with the esp tool chain, similarly to the gdb (example path: ``/home/casto/.espressif/tools/openocd-esp32/v0.10.0-esp32-20191114/openocd-esp32/bin/openocd``)
 7. For the GDB server args, enter these args, modifying the paths to your project: `` -s share/openocd/scripts -f /home/casto/git/Sherbrooke/SwarmUs/HiveConnect/tools/openocd/adafruit-esp.cfg -c "program_esp /home/casto/git/Sherbrooke/SwarmUs/HiveConnect/cmake-build-target/hive_connect.bin 0x10000"``
 
-Debugging is also supported in VS Code. Here is an example launch and task files necessary. Some changes to properly resolve paths are needed (changes to the user and version might be required):
-launch.json
-````json
-    {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "OpenOCD Debug",
-            "type": "cppdbg",
-            "request": "launch",
-            "miDebuggerPath": "/path/to/.espressif/tools/xtensa-esp32-elf/esp-2020r2-8.2.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gdb", // to be changed by user
-            "program": "${workspaceFolder}/cmake-build-target/hive_connect.elf",
-            "preLaunchTask": "openocd",
-            "setupCommands": [{
-                "description": "enable pretty printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }, {
-                "text": "file '${workspaceFolder}/cmake-build-target/hive_connect.elf'"
-            }, {
-                "text": "target remote :3333"
-            }, {
-                "text": "monitor program_esp32 ${workspaceFolder}/cmake-build-target/hive_connect.elf 0x10000 verify"
-            }, {
-                "text": "monitor reset halt"
-            }, {
-                "text": "thb app_main"
-            }],
-            "cwd": "${workspaceFolder}",
-            "externalConsole": false
-        }
-    ]
-}
-````
-tasks.json
-````json
-    {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "openocd",
-            "type": "shell",
-            "isBackground": true,
-            "dependsOn": "update-build",
-            "problemMatcher": [
-                {
-                  "pattern": [
-                    {
-                      "regexp": ".",
-                      "file": 1,
-                      "location": 2,
-                      "message": 3
-                    }
-                  ],
-                  "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": ".",
-                    "endsPattern": ".",
-                  }
-                }
-              ],
-            "options": 
-            {
-                "cwd": "/path/to/.espressif/tools/openocd-esp32/v0.10.0-esp32-20191114/openocd-esp32" // to be changed by user
-            },
-            "command": "bin/openocd -s share/openocd/scripts -f ${workspaceFolder}/tools/openocd/adafruit-esp.cfg -c 'program_esp ${workspaceFolder}/cmake-build-target/hive_connect.bin 0x10000'",
-        },
-        ,
-        {
-          "label": "update-build",
-          "type": "shell",
-          "isBackground": false,
-          "options": {
-            "cwd": "${workspaceFolder}/cmake-build-target/" // to be changed by user if different build directory
-          },
-          "command": "make app"
-        }
-    ]
-}
-````
+Debugging is also supported in VS Code. Some template files are supplied under `tools/vscode-templates` with some path to set.
 
 IMPORTANT: VS Code has trouble attaching the debugger on the first launch. If this occurs, relaunch the configuration and the program should launch and break on app_main() entry.
 

@@ -100,6 +100,10 @@ void NetworkManager::restart() {
 
     esp_netif_dhcps_stop(m_networkInterfaceHandle);
     m_state = NetworkManagerState::INIT;
+
+    // Fix for lwip errors upon reloading network config.
+    // Allows to apply network config but cause a reboot
+    esp_restart();
 }
 
 NetworkStatus NetworkManager::getNetworkStatus() const {

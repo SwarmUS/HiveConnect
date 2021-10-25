@@ -47,9 +47,12 @@ std::optional<MessageDTO> HiveConnectHiveMindApiMessageHandler::handleMessage(
         if (request->getMeshEnable().has_value() && ret) {
             ret &= m_storage.storeMeshEnabled(request->getMeshEnable().value());
         }
-
+        // Restart the network manager to apply the config
+        m_networkManager.restart();
+        m_logger.log(LogLevel::Info, "Applying new netwwork config");
         GenericResponseDTO responseDto(ret ? GenericResponseStatusDTO::Ok
                                            : GenericResponseStatusDTO::Error,
+
                                        ret ? "" : "Error setting network config");
         return MessageDTO(
             destId, sourceId,
