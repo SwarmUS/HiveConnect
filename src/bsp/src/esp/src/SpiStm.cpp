@@ -159,6 +159,7 @@ void SpiStm::execute() {
         // If it passes the CRC check, add the data to the circular buffer
         else if (CircularBuff_put(&m_circularBuf, m_inboundMessage.m_data.data(),
                                   m_inboundMessage.m_payloadSizeBytes) == CircularBuff_Ret_Ok) {
+            m_outboundHeader.systemState.stmSystemState.failedCrc = 0;
             // If a task was waiting to receive bytes, notify it
             if (m_receivingTaskHandle != nullptr) {
                 xTaskNotifyGive(m_receivingTaskHandle);
