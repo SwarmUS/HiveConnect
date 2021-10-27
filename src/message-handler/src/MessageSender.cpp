@@ -15,7 +15,7 @@ bool MessageSender::greet() {
 
 bool MessageSender::processAndSerialize() {
     if (m_inputQueue.isEmpty()) {
-        m_inputQueue.wait(500);
+        m_inputQueue.wait(1000);
     }
     const std::optional<std::reference_wrapper<const MessageDTO>> message = m_inputQueue.peek();
     if (message) {

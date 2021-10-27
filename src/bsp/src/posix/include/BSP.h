@@ -3,6 +3,7 @@
 
 #include "bsp/IBSP.h"
 #include "ros/ros.h"
+#include "BaseTask.h"
 
 class BSP : public IBSP {
   public:
@@ -17,6 +18,7 @@ class BSP : public IBSP {
     std::shared_ptr<ros::NodeHandle> getNodeHandle();
 
   private:
+    BaseTask<2 * configMINIMAL_STACK_SIZE> m_rosWatchTask;
     ros::AsyncSpinner m_spinner;
     std::shared_ptr<ros::NodeHandle> m_rosNodeHandle;
     uint16_t m_UUID;
