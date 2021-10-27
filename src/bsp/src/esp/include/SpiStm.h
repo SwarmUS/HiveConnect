@@ -20,7 +20,7 @@ class SpiStm : public ISpiStm {
     bool isConnected() const override;
 
   private:
-    BaseTask<configMINIMAL_STACK_SIZE * 3> m_driverTask;
+    BaseTask<configMINIMAL_STACK_SIZE * 10> m_driverTask;
 
     ILogger& m_logger;
     enum class transmitState { SENDING_HEADER, SENDING_PAYLOAD, ERROR } m_txState;
