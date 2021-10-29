@@ -46,3 +46,7 @@ uint16_t AbstractNetworkManager::getAgentList(uint16_t* agentList, uint8_t maxLe
     }
     return std::get<1>(tuple);
 }
+
+const uint32_t AbstractNetworkManager::getMaxAgentListLength() const {
+    return m_hashMap.getMaxSize();
+}

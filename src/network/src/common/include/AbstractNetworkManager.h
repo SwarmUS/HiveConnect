@@ -17,6 +17,7 @@ class AbstractNetworkManager : public INetworkManager {
     virtual bool registerAgent(uint16_t agentID, uint32_t ip) final override;
     virtual bool unregisterAgent(uint16_t agentID) final override;
     uint16_t getAgentList(uint16_t* agentList, uint8_t maxLength) const final override;
+    const uint32_t getMaxAgentListLength() const final override;
 
   protected:
     ILogger& m_logger;

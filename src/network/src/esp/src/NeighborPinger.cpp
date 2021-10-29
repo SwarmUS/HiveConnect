@@ -34,7 +34,7 @@ void test(esp_ping_handle_t pingHandle, void* context) {
 bool NeighborPinger::pingNeighbor(uint32_t neighborIp) {
     m_logger.log(LogLevel::Info, "Pinging neighbor!");
     ip_addr_t targetAddr;
-    targetAddr.u_addr.ip4.addr = neighborIp;
+    targetAddr.u_addr.ip4.addr = htonl(neighborIp);
     targetAddr.type = 0; // 0 for IPv4, 6 for IPv6
 
     esp_ping_config_t pingConfig = ESP_PING_DEFAULT_CONFIG(); // 5 pings, 1 second timeout

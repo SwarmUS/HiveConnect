@@ -65,6 +65,12 @@ class INetworkManager {
      * @return the number of agents added to the array
      */
     virtual uint16_t getAgentList(uint16_t* agentList, uint8_t maxLength) const = 0;
+
+    /**
+     * Get the maximum length of the agent list
+     * @return the maximum agent list
+     */
+    virtual const uint32_t getMaxAgentListLength() const = 0;
 };
 
 #endif // HIVE_CONNECT_INETWORKMANAGER_H

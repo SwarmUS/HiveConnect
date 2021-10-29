@@ -3,13 +3,14 @@
 #include "NetworkContainer.h"
 #include "SocketFactory.h"
 
-constexpr uint8_t g_LOOP_RATE = 100;
+constexpr uint8_t g_executeLoopRate = 100;
+constexpr uint16_t g_pingLoopRate = 5000;
 
 static void networkExecuteTask(void* context) {
     if (context != nullptr) {
         while (true) {
             static_cast<NetworkManager*>(context)->execute();
-            Task::delay(g_LOOP_RATE);
+            Task::delay(g_executeLoopRate);
         }
     }
 }
@@ -18,7 +19,7 @@ static void neighborPinger(void* context) {
     if (context != nullptr) {
         while (true) {
             static_cast<NetworkManager*>(context)->pingNeighbors();
-            Task::delay(g_LOOP_RATE);
+            Task::delay(g_pingLoopRate);
         }
     }
 }
@@ -186,9 +187,9 @@ void NetworkManager::execute() {
 }
 
 void NetworkManager::pingNeighbors() {
-    uint16_t neighbors[16];
-    uint16_t neighborCount = getAgentList(neighbors, 16);
-    for (uint8_t i = 0; i < neighborCount; i++) {
+    uint16_t neighbors[getMaxAgentListLength()];
+    uint16_t neighborCount = getAgentList(neighbors, getMaxAgentListLength());
+    for (uint32_t i = 0; i < neighborCount; i++) {
         auto ip = AbstractNetworkManager::getIPFromAgentID(neighbors[i]);
         if (ip.has_value() && !m_pinger.pingNeighbor(ip.value())) {
             m_logger.log(LogLevel::Warn, "Agent %d did not respond to ping", neighbors[i]);
