@@ -9,6 +9,7 @@ set(LIB_SOURCES
         src/TCPServer.cpp
         src/TCPClient.cpp
         src/NetworkBroadcast.cpp
+        src/NeighborPinger.cpp
         )
 
 set(LIB_HEADERS
@@ -19,6 +20,7 @@ set(LIB_HEADERS
         include/TCPClient.h
         include/TCPServer.h
         include/NetworkBroadcast.h
+        include/NeighborPinger.h
         )
 
 add_library(${LIB_NAME} STATIC ${LIB_HEADERS} ${LIB_SOURCES})
