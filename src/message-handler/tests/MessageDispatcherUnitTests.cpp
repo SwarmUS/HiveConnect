@@ -73,7 +73,7 @@ TEST_F(MessageDispatcherFixture, MessageDispatcherFixture_deserializeAndDispatch
     EXPECT_CALL(*m_bsp, setHiveMindUUID(m_greeting->getId())).Times(1);
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(true);
 
     // Expect
     EXPECT_TRUE(ret);
@@ -90,7 +90,7 @@ TEST_F(MessageDispatcherFixture,
     EXPECT_CALL(*m_bsp, setHiveMindUUID(testing::_)).Times(0);
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(true);
 
     // Expect
     EXPECT_FALSE(ret);
@@ -110,7 +110,7 @@ TEST_F(MessageDispatcherFixture, MessageDispatcherFixture_deserializeAndDispatch
             std::optional<NetworkApiDTO>({}))); // Behavior could change in the future.
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(false);
 
     // Expect
     EXPECT_TRUE(ret);
@@ -127,12 +127,13 @@ TEST_F(MessageDispatcherFixture,
         .Times(1)
         .WillOnce(testing::DoAll(testing::SetArgReferee<0>(m_message), testing::Return(true)));
     EXPECT_CALL(*m_bsp, getHiveMindUUID);
-    EXPECT_CALL(m_unicastQueue, push(testing::_)).Times(1).WillOnce(testing::Return(true));
+    // Fixme: replace this with unicast queue once socket creation delay is fixed
+    EXPECT_CALL(m_broadcastQueue, push(testing::_)).Times(1).WillOnce(testing::Return(true));
     EXPECT_CALL(m_manager, getIPFromAgentID(m_remoteUUID))
         .WillOnce(testing::Return(std::optional<uint32_t>(m_remoteUUID)));
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(true);
 
     // Expect
     EXPECT_TRUE(ret);
@@ -152,7 +153,7 @@ TEST_F(MessageDispatcherFixture,
     EXPECT_CALL(m_manager, getIPFromAgentID(m_remoteUUID)).WillOnce(testing::Return(std::nullopt));
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(true);
 
     // Expect
     EXPECT_FALSE(ret);
@@ -172,7 +173,7 @@ TEST_F(MessageDispatcherFixture,
     EXPECT_CALL(m_hivemindQueue, push(testing::_)).WillOnce(testing::Return(true));
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(false);
 
     // Expect
     EXPECT_TRUE(ret);
@@ -200,7 +201,7 @@ TEST_F(MessageDispatcherFixture,
     EXPECT_CALL(m_hivemindQueue, push(testing::_)).WillOnce(testing::Return(true));
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(true);
 
     // Expect
     EXPECT_TRUE(ret);
@@ -226,11 +227,11 @@ TEST_F(MessageDispatcherFixture,
         .WillOnce(testing::Return(msg));
     EXPECT_CALL(m_manager, getIPFromAgentID(m_remoteUUID))
         .WillOnce(testing::Return(std::optional<uint32_t>(m_remoteUUID)));
-
-    EXPECT_CALL(m_unicastQueue, push(testing::_)).WillOnce(testing::Return(true));
+    // Fixme: replace this with unicast queue once socket creation delay is fixed
+    EXPECT_CALL(m_broadcastQueue, push(testing::_)).WillOnce(testing::Return(true));
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(false);
 
     // Expect
     EXPECT_TRUE(ret);
@@ -255,7 +256,7 @@ TEST_F(MessageDispatcherFixture,
     EXPECT_CALL(m_hivemindQueue, push(testing::_)).WillOnce(testing::Return(true));
 
     // Then
-    bool ret = m_messageDispatcher->deserializeAndDispatch();
+    bool ret = m_messageDispatcher->deserializeAndDispatch(false);
 
     // Expect
     EXPECT_TRUE(ret);

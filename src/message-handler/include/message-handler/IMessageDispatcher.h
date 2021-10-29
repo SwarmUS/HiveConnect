@@ -11,9 +11,9 @@ class IMessageDispatcher {
 
     /**
      *@brief deserialize a message and dispatches it in the appropriate queue
-     *
+     *@param networkForwarding: flag to forward message undestined message to network.
      *@return true if the serialization and the dispatch was successful, false if any of those were
      *not*/
-    virtual bool deserializeAndDispatch() = 0;
+    virtual bool deserializeAndDispatch(bool networkForwarding) = 0;
 };
 #endif // __IMESSAGEDISPATCHER_H_

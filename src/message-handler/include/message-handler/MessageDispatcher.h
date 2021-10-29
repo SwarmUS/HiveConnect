@@ -24,7 +24,7 @@ class MessageDispatcher : public IMessageDispatcher {
                       INetworkManager& manager);
     ~MessageDispatcher() override = default;
 
-    bool deserializeAndDispatch() override;
+    bool deserializeAndDispatch(bool networkForwarding) override;
 
   private:
     ICircularQueue<MessageDTO>& m_hivemindOutputQueue;
@@ -39,10 +39,13 @@ class MessageDispatcher : public IMessageDispatcher {
     ILogger& m_logger;
     INetworkManager& m_manager;
 
-    bool dispatchNetworkAPI(const MessageDTO& message, const NetworkApiDTO& apiCall);
+    bool dispatchNetworkAPI(const MessageDTO& message,
+                            const NetworkApiDTO& apiCall,
+                            bool networkForwarding);
     bool dispatchHiveConnectHiveMindAPI(const MessageDTO& message,
-                                        const HiveConnectHiveMindApiDTO& apiCall);
-    bool forwardMessage(const MessageDTO& message);
+                                        const HiveConnectHiveMindApiDTO& apiCall,
+                                        bool networkForwarding);
+    bool forwardMessage(const MessageDTO& message, bool networkForwarding);
 };
 
 #endif // HIVE_CONNECT_MESSAGEDISPATCHER_H

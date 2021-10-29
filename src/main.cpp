@@ -70,7 +70,7 @@ class HiveMindDispatcher : public AbstractTask<10 * configMINIMAL_STACK_SIZE> {
 
         while (true) {
             if (spi.isConnected()) {
-                if (!dispatcher.deserializeAndDispatch()) {
+                if (!dispatcher.deserializeAndDispatch(true)) {
                     m_logger.log(LogLevel::Error, "Failed to deserialize/dispatch STM");
                 }
             } else {
@@ -138,7 +138,7 @@ class UnicastMessageDispatcher : public AbstractTask<10 * configMINIMAL_STACK_SI
             Task::delay(500);
         }
         while (true) {
-            if (!dispatcher.deserializeAndDispatch()) {
+            if (!dispatcher.deserializeAndDispatch(false)) {
                 m_logger.log(LogLevel::Error, "Fail to deserialize/dispatch unicast");
             }
         }
@@ -200,7 +200,7 @@ class BroadcastMessageDispatcher : public AbstractTask<10 * configMINIMAL_STACK_
             Task::delay(500);
         }
         while (true) {
-            if (!dispatcher.deserializeAndDispatch()) {
+            if (!dispatcher.deserializeAndDispatch(false)) {
                 m_logger.log(LogLevel::Error, "Fail to deserialize/dispatch broadcast");
             }
         }
