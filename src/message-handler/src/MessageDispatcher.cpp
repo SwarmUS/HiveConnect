@@ -77,7 +77,7 @@ bool MessageDispatcher::dispatchHiveConnectHiveMindAPI(const MessageDTO& message
         auto response = m_HiveConnectHiveMindMessageHandler.handleMessage(
             message.getSourceId(), message.getDestinationId(), apiCall);
         if (response.has_value()) {
-            return forwardMessage(response.value(), networkForwarding);
+            return forwardMessage(response.value(), true); // always forward response
         }
         return true;
     }
