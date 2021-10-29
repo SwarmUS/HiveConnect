@@ -38,9 +38,7 @@ bool NeighborPinger::pingNeighbor(uint32_t neighborIp) {
     targetAddr.type = 0; // 0 for IPv4, 6 for IPv6
 
     esp_ping_config_t pingConfig = ESP_PING_DEFAULT_CONFIG(); // 5 pings, 1 second timeout
-    pingConfig.data_size = 8;
     pingConfig.target_addr = targetAddr;
-    pingConfig.task_prio = tskIDLE_PRIORITY + 10;
 
     esp_ping_callbacks_t pingCallbacks;
     pingCallbacks.on_ping_success = pingSuccess;
