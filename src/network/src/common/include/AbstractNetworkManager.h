@@ -13,9 +13,10 @@ class AbstractNetworkManager : public INetworkManager {
         m_logger(logger), m_hashMap(hashMap) {}
     virtual ~AbstractNetworkManager() = default;
 
-    virtual std::optional<uint32_t> getIPFromAgentID(uint16_t agentID) const final;
-    virtual bool registerAgent(uint16_t agentID, uint32_t ip) final;
-    uint16_t getAgentList(uint16_t* agentList, uint8_t maxLength) const final;
+    virtual std::optional<uint32_t> getIPFromAgentID(uint16_t agentID) const final override;
+    virtual bool registerAgent(uint16_t agentID, uint32_t ip) final override;
+    virtual bool unregisterAgent(uint16_t agentID) final override;
+    uint16_t getAgentList(uint16_t* agentList, uint8_t maxLength) const final override;
 
   protected:
     ILogger& m_logger;

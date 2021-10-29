@@ -2,6 +2,7 @@
 #define HIVE_CONNECT_NETWORKMANAGER_H
 
 #include "../../common/include/AbstractNetworkManager.h"
+#include "NeighborPinger.h"
 #include "TCPClient.h"
 #include "TCPServer.h"
 #include "bsp/IUserInterface.h"
@@ -27,14 +28,16 @@ class NetworkManager : public AbstractNetworkManager {
     uint32_t getSelfIP() const override;
 
     /**
-     * @brief Execution loop, called internally
+     * @brief Execution loops, called internally
      */
     void execute();
+    void pingNeighbors();
 
   private:
     INetworkInputStream& m_server;
     IUserInterface& m_ui;
-    BaseTask<configMINIMAL_STACK_SIZE * 4> m_networkExecuteTask;
+    BaseTask<configMINIMAL_STACK_SIZE * 10> m_networkExecuteTask;
+    BaseTask<configMINIMAL_STACK_SIZE * 10> m_neighborPingerTask;
     esp_ip4_addr_t m_ipAddress;
     esp_netif_obj* m_networkInterfaceHandle;
     enum class NetworkManagerState {
@@ -50,6 +53,8 @@ class NetworkManager : public AbstractNetworkManager {
                              int32_t eventId,
                              void* eventData);
     bool initNetworkInterface();
+
+    NeighborPinger m_pinger;
 };
 
 #endif // HIVE_CONNECT_NETWORKMANAGER_H

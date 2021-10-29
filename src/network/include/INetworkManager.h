@@ -52,6 +52,13 @@ class INetworkManager {
     virtual bool registerAgent(uint16_t agentID, uint32_t ip) = 0;
 
     /**
+     * @brief Remove an agent from the list of known agents
+     * @param [in] agentID the id to the agent to unregister
+     * @return true if the agent was successfully removed
+     */
+    virtual bool unregisterAgent(uint16_t agentID) = 0;
+
+    /**
      * @brief Get the the agents lists as
      * @param [in] agentList the array to populate with agent IDs
      * @param [in] maxLength The maximum size of the array
