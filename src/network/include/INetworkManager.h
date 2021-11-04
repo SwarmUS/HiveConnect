@@ -52,12 +52,25 @@ class INetworkManager {
     virtual bool registerAgent(uint16_t agentID, uint32_t ip) = 0;
 
     /**
+     * @brief Remove an agent from the list of known agents
+     * @param [in] agentID the id to the agent to unregister
+     * @return true if the agent was successfully removed
+     */
+    virtual bool unregisterAgent(uint16_t agentID) = 0;
+
+    /**
      * @brief Get the the agents lists as
      * @param [in] agentList the array to populate with agent IDs
      * @param [in] maxLength The maximum size of the array
      * @return the number of agents added to the array
      */
     virtual uint16_t getAgentList(uint16_t* agentList, uint8_t maxLength) const = 0;
+
+    /**
+     * Get the maximum length of the agent list
+     * @return the maximum agent list
+     */
+    virtual const uint32_t getMaxAgentListLength() const = 0;
 };
 
 #endif // HIVE_CONNECT_INETWORKMANAGER_H

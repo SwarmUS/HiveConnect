@@ -104,7 +104,7 @@ void SpiStm::execute() {
         // Validate header
         if (m_inboundHeader->crc8 !=
             calculateCRC8_software(m_inboundHeader, StmHeader::sizeBytes - 1)) {
-            m_logger.log(LogLevel::Error, "Received corrupted STM SPI header");
+            m_logger.log(LogLevel::Debug, "Received corrupted STM SPI header");
             m_logger.log(LogLevel::Debug, "Bytes were: | %d | %d | %d | %d |",
                          m_inboundMessage.m_data[0], m_inboundMessage.m_data[1],
                          m_inboundMessage.m_data[2], m_inboundMessage.m_data[3]);
@@ -173,7 +173,7 @@ void SpiStm::execute() {
         rxLengthBytes = StmHeader::sizeBytes;
         break;
     case receiveState::ERROR:
-        m_logger.log(LogLevel::Error, "Error within Spi driver STM - RX");
+        m_logger.log(LogLevel::Debug, "Error within Spi driver STM - RX");
         m_inboundMessage.m_sizeBytes = 0;
         CircularBuff_clear(&m_circularBuf);
         if (m_receivingTaskHandle != nullptr) {

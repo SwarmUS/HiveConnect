@@ -34,6 +34,8 @@ bool AbstractNetworkManager::registerAgent(uint16_t agentID, uint32_t ip) {
     return false;
 }
 
+bool AbstractNetworkManager::unregisterAgent(uint16_t agentID) { return m_hashMap.remove(agentID); }
+
 uint16_t AbstractNetworkManager::getAgentList(uint16_t* agentList, uint8_t maxLength) const {
     uint8_t index = 0;
     std::tuple<uint16_t*, uint8_t, uint8_t> tuple = std::make_tuple(agentList, index, maxLength);
@@ -43,4 +45,8 @@ uint16_t AbstractNetworkManager::getAgentList(uint16_t* agentList, uint8_t maxLe
                      maxLength);
     }
     return std::get<1>(tuple);
+}
+
+const uint32_t AbstractNetworkManager::getMaxAgentListLength() const {
+    return m_hashMap.getMaxSize();
 }

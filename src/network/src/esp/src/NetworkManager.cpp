@@ -3,13 +3,23 @@
 #include "NetworkContainer.h"
 #include "SocketFactory.h"
 
-constexpr uint8_t g_LOOP_RATE = 100;
+constexpr uint8_t g_executeLoopRate = 100;
+constexpr uint16_t g_pingLoopRate = 5000;
 
 static void networkExecuteTask(void* context) {
     if (context != nullptr) {
         while (true) {
             static_cast<NetworkManager*>(context)->execute();
-            Task::delay(g_LOOP_RATE);
+            Task::delay(g_executeLoopRate);
+        }
+    }
+}
+
+static void neighborPinger(void* context) {
+    if (context != nullptr) {
+        while (true) {
+            static_cast<NetworkManager*>(context)->pingNeighbors();
+            Task::delay(g_pingLoopRate);
         }
     }
 }
@@ -19,10 +29,11 @@ NetworkManager::NetworkManager(ILogger& logger,
                                IHashMap<uint16_t, uint32_t>& hashMap,
                                IUserInterface& ui) :
     AbstractNetworkManager(logger, hashMap),
-
     m_networkExecuteTask("network_manager", tskIDLE_PRIORITY + 1, networkExecuteTask, this),
+    m_neighborPingerTask("ping_neighbors", tskIDLE_PRIORITY + 1, neighborPinger, this),
     m_server(server),
-    m_ui(ui) {
+    m_ui(ui),
+    m_pinger(logger) {
 
     // Initialise to 0.0.0.0
     m_ipAddress.addr = 0;
@@ -87,7 +98,10 @@ void NetworkManager::eventHandler(void* context,
     }
 }
 
-void NetworkManager::start() { m_networkExecuteTask.start(); }
+void NetworkManager::start() {
+    m_networkExecuteTask.start();
+    m_neighborPingerTask.start();
+}
 
 void NetworkManager::restart() {
     esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &eventHandler);
@@ -169,5 +183,18 @@ void NetworkManager::execute() {
         m_logger.log(LogLevel::Warn, "Reached unintended case within network manager");
         m_state = NetworkManagerState::INIT; // Probably the best way to handle it
         break;
+    }
+}
+
+void NetworkManager::pingNeighbors() {
+    uint16_t neighbors[getMaxAgentListLength()];
+    uint16_t neighborCount = getAgentList(neighbors, getMaxAgentListLength());
+    for (uint32_t i = 0; i < neighborCount; i++) {
+        auto ip = AbstractNetworkManager::getIPFromAgentID(neighbors[i]);
+        if (ip.has_value() && !m_pinger.pingNeighbor(ip.value())) {
+            m_logger.log(LogLevel::Warn, "Agent %d did not respond to ping", neighbors[i]);
+            unregisterAgent(neighbors[i]);
+        }
+        i++;
     }
 }
