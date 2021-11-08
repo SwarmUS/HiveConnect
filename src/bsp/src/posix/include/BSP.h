@@ -1,9 +1,9 @@
 #ifndef BSP_H
 #define BSP_H
 
+#include "BaseTask.h"
 #include "bsp/IBSP.h"
 #include "ros/ros.h"
-#include "BaseTask.h"
 
 class BSP : public IBSP {
   public:

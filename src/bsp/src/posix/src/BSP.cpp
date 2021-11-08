@@ -1,7 +1,6 @@
 #include "BSP.h"
-#include <thread>
 #include <Task.h>
-
+#include <thread>
 
 constexpr uint8_t gc_spinnerCores = 1;
 
@@ -18,10 +17,9 @@ void rosWatcher(void* param) {
     }
 }
 
-
 BSP::~BSP() = default;
 
-BSP::BSP(const ros::NodeHandle& nodeHandle) : 
+BSP::BSP(const ros::NodeHandle& nodeHandle) :
     m_rosWatchTask("ros_watch", tskIDLE_PRIORITY + 1, rosWatcher, NULL),
     m_spinner(gc_spinnerCores) {
     m_rosNodeHandle = std::make_shared<ros::NodeHandle>(nodeHandle);
