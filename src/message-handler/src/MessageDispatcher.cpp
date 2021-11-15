@@ -110,6 +110,11 @@ bool MessageDispatcher::forwardMessage(const MessageDTO& message, bool networkFo
         // Fixme: change to unicast queue once socket creation delay is fixed
         return m_broadcastOutputQueue.push(message);
     }
+
+    if (!networkForwarding) {
+        m_logger.log(LogLevel::Info, "No need to forward message");
+        return true;
+    }
     m_logger.log(LogLevel::Error, "Failed to forward message");
     return false;
 }
