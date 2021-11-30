@@ -8,7 +8,7 @@
 #include "logger/LoggerContainer.h"
 
 // Could be raised in the future if needed
-constexpr uint16_t gc_queueMaxSize = 32;
+constexpr uint16_t gc_queueMaxSize = 16;
 
 NetworkAPIHandler MessageHandlerContainer::createNetworkApiHandler() {
     return NetworkAPIHandler(BspContainer::getBSP(), LoggerContainer::getLogger(),
