@@ -74,7 +74,7 @@ bool SpiStm::send(const uint8_t* buffer, uint16_t length) {
     // Wait for transmission to be over. Will be notified when ACK received or upon error
     m_sendingTaskHandle = xTaskGetCurrentTaskHandle();
     m_hasSentPayload = false;
-    while(!m_hasSentPayload) {
+    while (!m_hasSentPayload) {
         ulTaskNotifyTake(pdTRUE, 20);
     }
     m_logger.log(LogLevel::Debug, "Payload sent!");
@@ -190,7 +190,6 @@ void SpiStm::execute() {
     // loop of the master driver in HiveMind. The loop needs no delay and shouldn't
     // have one as it will only increase latency, which could lead to instability.
     spi_slave_transmit(STM_SPI, &m_transaction, portMAX_DELAY);
-
 }
 
 void SpiStm::updateOutboundHeader() {
