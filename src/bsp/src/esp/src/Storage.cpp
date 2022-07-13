@@ -10,6 +10,9 @@ Storage::Storage(ILogger& logger) : m_logger(logger) {
     while (nvs_open("storage", NVS_READWRITE, &m_networkStorageHandle) != ESP_OK) {
         m_logger.log(LogLevel::Error, "Storage cannot open partitions for settings");
     }
+    if (gs_forceDefaultNetworkConfigOnBoot) {
+        clearStorage();
+    }
 }
 
 bool Storage::storeSSID(const char* ssid) {
