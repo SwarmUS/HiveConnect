@@ -43,8 +43,13 @@ bool NetworkBroadcast::send(const uint8_t* data, uint16_t length) {
     broadcast.sin_len = sizeof(broadcast);
 
     // Use lwip_sendto with udp since it is a connection-less protocol.
-    return lwip_sendto(m_socket, data, length, 0, (sockaddr*)&broadcast, sizeof(broadcast)) ==
-           length;
+    int ret = lwip_sendto(m_socket, data, length, 0, (sockaddr*)&broadcast, sizeof(broadcast));
+    // If buffers were full, will return -1. Check for successful queueing
+    while (ret == -1) {
+        Task::delay(1);
+        ret = lwip_sendto(m_socket, data, length, 0, (sockaddr*)&broadcast, sizeof(broadcast));
+    }
+    return ret == length;
 }
 
 bool NetworkBroadcast::receive(uint8_t* data, uint16_t length) {

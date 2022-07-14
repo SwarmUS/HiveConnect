@@ -23,13 +23,12 @@ class SpiStm : public ISpiStm {
     BaseTask<configMINIMAL_STACK_SIZE * 10> m_driverTask;
 
     ILogger& m_logger;
-    enum class transmitState { SENDING_HEADER, SENDING_PAYLOAD, ERROR } m_txState;
+    enum class transmitState { SENDING_HEADER, SENDING_PAYLOAD } m_txState;
     enum class receiveState {
         RECEIVING_HEADER,
         PARSING_HEADER,
         RECEIVING_PAYLOAD,
-        VALIDATE_CRC,
-        ERROR
+        VALIDATE_CRC
     } m_rxState;
 
     spi_slave_transaction_t m_transaction;

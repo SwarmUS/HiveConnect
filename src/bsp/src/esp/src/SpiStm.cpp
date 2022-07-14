@@ -73,15 +73,14 @@ bool SpiStm::send(const uint8_t* buffer, uint16_t length) {
 
     // Wait for transmission to be over. Will be notified when ACK received or upon error
     m_sendingTaskHandle = xTaskGetCurrentTaskHandle();
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-    if (m_txState == transmitState::ERROR) {
-        m_logger.log(LogLevel::Error, "Error occurred...");
-        return false;
+    m_hasSentPayload = false;
+    while (!m_hasSentPayload) {
+        ulTaskNotifyTake(pdTRUE, 20);
     }
     m_logger.log(LogLevel::Debug, "Payload sent!");
 
     m_sendingTaskHandle = nullptr;
-    return m_crcOK;
+    return true;
 }
 
 bool SpiStm::isConnected() const {
@@ -93,11 +92,11 @@ bool SpiStm::isConnected() const {
 
 void SpiStm::execute() {
     uint32_t txLengthBytes = 0;
-    uint32_t rxLengthBytes = 0;
+    uint32_t rxLengthBytes = StmHeader::sizeBytes;
 
     switch (m_rxState) {
     case receiveState::RECEIVING_HEADER:
-        rxLengthBytes = StmHeader::sizeBytes;
+        // Default state, nothing to do here
         break;
     case receiveState::PARSING_HEADER:
         m_inboundHeader = (StmHeader::Header*)m_inboundMessage.m_data.data();
@@ -108,7 +107,8 @@ void SpiStm::execute() {
             m_logger.log(LogLevel::Debug, "Bytes were: | %d | %d | %d | %d |",
                          m_inboundMessage.m_data[0], m_inboundMessage.m_data[1],
                          m_inboundMessage.m_data[2], m_inboundMessage.m_data[3]);
-            m_rxState = receiveState::ERROR;
+            m_inboundMessage.m_sizeBytes = 0;
+            m_rxState = receiveState::RECEIVING_HEADER;
             m_isConnected = false;
             break;
         }
@@ -133,16 +133,7 @@ void SpiStm::execute() {
             m_logger.log(LogLevel::Debug, "Receiving payload");
             m_rxState = receiveState::RECEIVING_PAYLOAD;
         } else {
-            rxLengthBytes = StmHeader::sizeBytes;
             m_rxState = receiveState::RECEIVING_HEADER;
-        }
-        // Payload has been sent. Check crc and notify sending task
-        if (m_hasSentPayload) {
-            m_hasSentPayload = false;
-            m_crcOK = !m_inboundHeader->systemState.stmSystemState.failedCrc;
-            if (m_sendingTaskHandle != nullptr) {
-                xTaskNotifyGive(m_sendingTaskHandle);
-            }
         }
         break;
     case receiveState::RECEIVING_PAYLOAD:
@@ -170,16 +161,6 @@ void SpiStm::execute() {
         m_inboundMessage.m_sizeBytes = 0;
         m_inboundMessage.m_payloadSizeBytes = 0;
         m_rxState = receiveState::RECEIVING_HEADER;
-        rxLengthBytes = StmHeader::sizeBytes;
-        break;
-    case receiveState::ERROR:
-        m_logger.log(LogLevel::Debug, "Error within Spi driver STM - RX");
-        m_inboundMessage.m_sizeBytes = 0;
-        CircularBuff_clear(&m_circularBuf);
-        if (m_receivingTaskHandle != nullptr) {
-            xTaskNotifyGive(m_receivingTaskHandle);
-        }
-        m_rxState = receiveState::RECEIVING_HEADER;
         break;
     }
 
@@ -192,15 +173,7 @@ void SpiStm::execute() {
     case transmitState::SENDING_PAYLOAD:
         m_transaction.tx_buffer = m_outboundMessage.m_data.data();
         txLengthBytes = m_outboundMessage.m_sizeBytes;
-        m_hasSentPayload = false;
         m_crcOK = false;
-        break;
-    case transmitState::ERROR:
-        // Notify sending task that error occurred
-        if (m_sendingTaskHandle != nullptr) {
-            xTaskNotifyGive(m_sendingTaskHandle);
-        }
-        m_logger.log(LogLevel::Error, "Error within Spi driver STM - TX");
         break;
     }
 
@@ -208,16 +181,15 @@ void SpiStm::execute() {
     m_transaction.length = BYTES_TO_BITS(std::max(rxLengthBytes, txLengthBytes));
     // Rx buffer should always be the inbound message buffer.
     m_transaction.rx_buffer = m_inboundMessage.m_data.data();
-
-    if (m_txState != transmitState::ERROR && m_rxState != receiveState::ERROR) {
-        if (m_outboundHeader.payloadSizeBytes != 0) {
-            notifyMaster();
-        }
-        // This call is blocking, so the rate of the of the loop is inferred byt the rate of the
-        // loop of the master driver in HiveMind. The loop needs no delay and shouldn't
-        // have one as it will only increase latency, which could lead to instability.
-        spi_slave_transmit(STM_SPI, &m_transaction, portMAX_DELAY);
+    // Only notify master when payload needs to be sent
+    if (m_outboundHeader.payloadSizeBytes != 0) {
+        notifyMaster();
     }
+    m_inboundMessage.m_data.fill(0);
+    // This call is blocking, so the rate of the of the loop is inferred byt the rate of the
+    // loop of the master driver in HiveMind. The loop needs no delay and shouldn't
+    // have one as it will only increase latency, which could lead to instability.
+    spi_slave_transmit(STM_SPI, &m_transaction, portMAX_DELAY);
 }
 
 void SpiStm::updateOutboundHeader() {
@@ -237,6 +209,8 @@ void SpiStm::notifyMaster() {
 void IRAM_ATTR SpiStm::transactionCallback(void* context, spi_slave_transaction_t* transaction) {
     auto* instance = static_cast<SpiStm*>(context);
     if (transaction->length != transaction->trans_len) {
+        instance->m_txState = transmitState::SENDING_HEADER;
+        instance->m_rxState = receiveState::RECEIVING_HEADER;
         // Transaction timed out before it could finish.
         return;
     }
@@ -252,14 +226,15 @@ void IRAM_ATTR SpiStm::transactionCallback(void* context, spi_slave_transaction_
         // This should never be called. The state machine should never be in any other state during
         // the ISR.
         instance->m_logger.log(LogLevel::Error, "Interrupted called on invalid state");
-        instance->m_txState = transmitState::ERROR;
         break;
     }
-
+    BaseType_t yield;
     if (instance->m_txState == transmitState::SENDING_PAYLOAD) { // TODO: confirm reception with ack
         instance->m_txState = transmitState::SENDING_HEADER;
         instance->m_outboundMessage.m_sizeBytes = 0;
         instance->m_outboundMessage.m_payloadSizeBytes = 0;
         instance->m_hasSentPayload = true;
+        vTaskNotifyGiveFromISR(instance->m_sendingTaskHandle, &yield);
     }
+    portYIELD_FROM_ISR();
 }
