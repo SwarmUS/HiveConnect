@@ -18,6 +18,7 @@ constexpr bool gs_useMesh = @USE_MESH@;
 #define DEFAULT_BROADCAST_INPUT_PORT @BROADCAST_INPUT_PORT@
 #define DEFAULT_BROADCAST_OUTPUT_PORT @BROADCAST_OUTPUT_PORT@
 constexpr uint16_t gs_MAX_DATAGRAM_SIZE = @MAX_DATAGRAM_SIZE@;
+constexpr bool gs_forceDefaultNetworkConfigOnBoot = @FORCE_DEFAULT_NETWORK_CONFIG_ON_BOOT@;
 
 // clang-format on
 #endif //__DEFAULTNETWORKCONFIG_H__
